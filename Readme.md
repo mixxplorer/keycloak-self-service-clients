@@ -4,6 +4,8 @@ This projects allows Keycloak users to create and manage their own clients. Inte
 
 The goal is to provide users a way to easily attach their applications to Keycloak without going through a complicated process with e.g. the IT department.
 
+![Screenshot of frontend](docs/images/edit_client_screenshot.png)
+
 ## Components
 
 The project consists of two main components:
