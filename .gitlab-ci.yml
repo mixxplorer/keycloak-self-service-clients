@@ -1,0 +1,69 @@
+default:
+  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/gradle:8.7-jdk17
+
+stages:
+  - test
+  - build
+  - pack
+
+# Check that no files with CRLF are in the repo
+check:line-endings:
+  image: dr.rechenknecht.net/bauhelfer/container/main/build-environment
+  stage: test
+  needs: []
+  script:
+    - '! find . -not -type d -not -iname "gradlew.bat" -exec file "{}" ";" | grep CRLF'
+
+lint-keycloak-api:
+  stage: test
+  needs: []
+  script:
+    - cd keycloak
+    - gradle checkstyleMain
+
+build-keycloak-api:
+  stage: build
+  needs: []
+  script:
+    - cd keycloak
+    - gradle jar
+  artifacts:
+    paths:
+      - keycloak/build/libs/*.jar
+    expire_in: 1 month
+
+build-frontend:
+  stage: build
+  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/library/node:18
+  needs: []
+  script:
+    - cd frontend
+    - yarn install
+    - yarn lint
+    - yarn build
+  artifacts:
+    paths:
+      - frontend/dist
+    expire_in: 1 month
+
+docker-frontend:
+  stage: pack
+  image:
+    name: gcr.io/kaniko-project/executor:v1.14.0-debug
+    entrypoint: [""]
+  variables:
+    IMAGE_TAG_ENV: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:frontend-$CI_PIPELINE_IID
+    IMAGE_TAG_GENERAL: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:frontend-latest
+  needs:
+    - job: build-frontend
+      artifacts: true
+  script:
+    - cd frontend
+    - /kaniko/executor
+      -v warn
+      --context "${CI_PROJECT_DIR}/frontend"
+      --dockerfile "${CI_PROJECT_DIR}/frontend/Dockerfile"
+      --destination "${IMAGE_TAG_ENV}"
+      --destination "${IMAGE_TAG_GENERAL}"
+    - echo "Pushed to ${IMAGE_TAG_ENV}"
+    - echo "Pushed to ${IMAGE_TAG_GENERAL}"
