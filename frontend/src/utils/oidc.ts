@@ -1,5 +1,5 @@
 // import { Notifier } from 'components/notifier/Notifier'
-import { OidcClient, OidcConfiguration, TokenAutomaticRenewMode } from '@axa-fr/oidc-client'
+import { ILOidcLocation, OidcClient, OidcConfiguration, OidcLocation, TokenAutomaticRenewMode } from '@axa-fr/oidc-client'
 
 import {
   APP_BASE_URL,
@@ -7,6 +7,12 @@ import {
   KEYCLOAK_CLIENT_ID,
   IDP_URL,
 } from 'src/app-constants'
+
+class ReplaceOidcLocation extends OidcLocation implements ILOidcLocation {
+  open(url: string): void {
+    window.location.replace(url)
+  }
+}
 
 export class OidcUtils {
   /**
@@ -49,7 +55,7 @@ export class OidcUtils {
       storage: sessionStorage,
     }
 
-    const oidcClient = OidcClient.getOrCreate(() => fetch)(configuration)
+    const oidcClient = OidcClient.getOrCreate(() => fetch, new ReplaceOidcLocation())(configuration)
 
     return oidcClient
   }
