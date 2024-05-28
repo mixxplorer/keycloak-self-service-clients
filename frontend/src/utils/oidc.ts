@@ -1,5 +1,5 @@
 // import { Notifier } from 'components/notifier/Notifier'
-import { UserManager } from 'oidc-client-ts'
+import { OidcClient, OidcConfiguration, TokenAutomaticRenewMode } from '@axa-fr/oidc-client'
 
 import {
   APP_BASE_URL,
@@ -19,6 +19,7 @@ export class OidcUtils {
     if (appRedirectUri.length > 0 && appRedirectUri.startsWith('/')) {
       appRedirectUri = appRedirectUri.slice(1)
     }
+
     // Prepend uri with app base url
     if (process.env.VUE_ROUTER_MODE === 'hash') {
       appRedirectUri = `${APP_BASE_URL}/#/${appRedirectUri}`
@@ -29,14 +30,43 @@ export class OidcUtils {
     return appRedirectUri
   }
 
-  public static getNewUserManager(): UserManager {
-    const userManager = new UserManager({
-      authority: IDP_URL,
+  public static getNewOidcClient(): OidcClient {
+    // const userManager = new UserManager({
+    //   authority: IDP_URL,
+    //   client_id: KEYCLOAK_CLIENT_ID,
+    //   redirect_uri: this.generateRedirectUri(),
+    //   stopCheckSessionOnError: false,
+    // })
+
+    const configuration: OidcConfiguration = {
       client_id: KEYCLOAK_CLIENT_ID,
       redirect_uri: this.generateRedirectUri(),
-      stopCheckSessionOnError: false,
-    })
+      scope: 'openid profile',
+      authority: IDP_URL,
+      service_worker_activate: () => false,
+      token_automatic_renew_mode: TokenAutomaticRenewMode.AutomaticBeforeTokenExpiration,
+      refresh_time_before_tokens_expiration_in_second: 30,
+      storage: sessionStorage,
+    }
 
-    return userManager
+    const oidcClient = OidcClient.getOrCreate(() => fetch)(configuration)
+
+    return oidcClient
+  }
+
+  // get redirect URL before getting real tokens as we have no possibility to get the URL when login fails e.g.
+  // with `login_required`, see also https://github.com/AxaFrance/oidc-client/issues/1375
+  // This is quite a hack, will remove once the library supports this use case.
+  public static getRedirectUrl(configurationName: string): string {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const storageRes = sessionStorage.getItem(`oidc.login.${configurationName}`)
+
+    if (storageRes !== null) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const storageJson = JSON.parse(storageRes)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      return storageJson.callbackPath as string
+    }
+    throw Error('Redirect Url not set in session storage!')
   }
 }

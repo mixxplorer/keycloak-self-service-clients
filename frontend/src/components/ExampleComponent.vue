@@ -9,7 +9,7 @@
     <p>Count: {{ todoCount }} / {{ meta.totalCount }}</p>
     <p>Active: {{ active ? 'yes' : 'no' }}</p>
     <p>Clicks on todos: {{ clickCount }}</p>
-    <p>UserInfo: {{ userStore.userInfo?.profile.preferred_username }}</p>
+    <p>UserInfo: {{ userStore.userInfo?.preferred_username }}</p>
     <p>Loading state: {{ userStore.loadingState }}</p>
     <p>
       Authenticated: {{ userStore.authenticated }}

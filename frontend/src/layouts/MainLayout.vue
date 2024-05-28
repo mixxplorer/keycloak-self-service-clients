@@ -19,7 +19,17 @@
       <q-list>
         <q-item-label header>Main Navigation</q-item-label>
 
-        <q-item clickable tag="a" to="/clients">
+        <q-item clickable tag="a" :to="{ name: 'Home' }" exact>
+          <q-item-section avatar>
+            <q-icon name="home" />
+          </q-item-section>
+
+          <q-item-section>
+            <q-item-label>Home</q-item-label>
+          </q-item-section>
+        </q-item>
+
+        <q-item clickable tag="a" :to="{ name: 'ClientsList' }">
           <q-item-section avatar>
             <q-icon name="list" />
           </q-item-section>

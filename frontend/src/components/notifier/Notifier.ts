@@ -1,8 +1,8 @@
 /* eslint @typescript-eslint/ban-types: 0 */
-import { Notify } from 'quasar'
+import { Notify, QNotifyUpdateOptions } from 'quasar'
 export class Notifier {
   // Chose return type Function because Quasar is returning it as well
-  public static showSuccessMessage(message: string, timeout = 2500): Function {
+  public static showSuccessMessage(message: string, timeout = 2500): (props?: QNotifyUpdateOptions | undefined) => void {
     return Notify.create({
       type: 'positive',
       message,
@@ -18,7 +18,7 @@ export class Notifier {
     })
   }
 
-  public static showWarningMessage(message: string): Function {
+  public static showWarningMessage(message: string): (props?: QNotifyUpdateOptions | undefined) => void {
     return Notify.create({
       type: 'warning',
       message,
@@ -28,7 +28,7 @@ export class Notifier {
   public static showErrorMessage(
     message: string,
     closeBtn?: string | boolean,
-  ): Function {
+  ): (props?: QNotifyUpdateOptions | undefined) => void {
     const actionList = []
     if (closeBtn === undefined || closeBtn === true) {
       actionList.push({
@@ -51,7 +51,7 @@ export class Notifier {
     })
   }
 
-  public static showDefaultSaveSuccessMessage(): Function {
+  public static showDefaultSaveSuccessMessage(): (props?: QNotifyUpdateOptions | undefined) => void {
     return this.showSuccessMessage('Saving successful!')
   }
 }

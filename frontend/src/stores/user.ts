@@ -1,84 +1,88 @@
-import { ErrorResponse, User, UserManager } from 'oidc-client-ts'
+import { OidcClient, StringMap } from '@axa-fr/oidc-client'
 import { defineStore } from 'pinia'
-import { RouteLocationRaw } from 'vue-router'
 
 import { IDP_CALLBACK_URI } from 'src/app-constants'
 import { Notifier } from 'src/components/notifier/Notifier'
+import { IUserInfo } from 'src/definitions/UserInfo'
 import { OidcUtils } from 'src/utils/oidc'
 
 export enum UserLoadingState {
   LOADING,
-  LOADED,
+  UNDECIDED,
+  AUTHENTICATED,
+  UNAUTHENTICATED,
   ERROR,
 }
 
 export interface IUserState {
   loadingState: UserLoadingState;
-  userInfo: User | null;
-  idpUserManager: UserManager;
-}
-
-interface IAuthenticationState {
-  redirectUri: RouteLocationRaw;
+  userInfo: IUserInfo | null;
+  idpOidcClient: OidcClient;
+  idpErrorNotificationClose: (() => void) | null;
 }
 
 export const useUserStore = defineStore('user', {
   state: (): IUserState => {
-    const userManager = OidcUtils.getNewUserManager()
+    const oidcClient = OidcUtils.getNewOidcClient()
     return {
       loadingState: UserLoadingState.LOADING,
       userInfo: null,
-      idpUserManager: userManager,
+      idpOidcClient: oidcClient,
+      idpErrorNotificationClose: null,
     }
   },
 
   getters: {
     hasValidTokens(): boolean {
-      return !this.userInfo?.expired
+      return this.authenticated && Date.now() > this.idpOidcClient.tokens.expiresAt * 1000
     },
 
     authenticated(): boolean {
-      return this.userInfo !== null
+      return this.userInfo !== null && this.loadingState === UserLoadingState.AUTHENTICATED
     },
   },
 
   actions: {
     async loadUser(): Promise<void> {
-      // make sure we get notified about token refresh events
-      this.idpUserManager.events.addUserLoaded((user) => {
-        this.userInfo = user
-      })
-
-      this.idpUserManager.events.addSilentRenewError((error: Error) => {
-        // eslint-disable-next-line no-console
-        console.log(error)
-
-        if (typeof error === 'object') {
-          if (error.message !== undefined && error.message.includes('NetworkError')) {
-            Notifier.showErrorMessage(
-              'Refreshing your access token failed. Cannot connect to IdP.',
-            )
-            this.idpUserManager.startSilentRenew()
-          } else if ((error as ErrorResponse).error === 'invalid_grant') {
-            // user session has ended upstream
-            this.idpUserManager.removeUser()
-            this.userInfo = null
-
-            Notifier.showErrorMessage(
-              'Refreshing your access token failed. Your session has ended. You cannot save any information, please reload the page.',
-            )
-          } else {
-            Notifier.showErrorMessage(
-              'Refreshing your access token failed. Please make sure you have a working connection to your IdP.',
-            )
-
-            this.idpUserManager.startSilentRenew()
+      this.idpOidcClient.subscribeEvents((name, data) => {
+        if (['token_aquired', 'token_renewed'].includes(name)) {
+          if (this.idpErrorNotificationClose !== null) {
+            this.idpErrorNotificationClose()
+            this.idpErrorNotificationClose = null
           }
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          this.userInfo = this.idpOidcClient.tokens.idTokenPayload as IUserInfo
+          this.loadingState = UserLoadingState.AUTHENTICATED
+        } else if (['token_timer', 'loginAsync_begin', 'loginCallbackAsync_begin', 'loginCallbackAsync_end'].includes(name)) {
+          // ignore these events, they are not useful for us
+        } else if (name === 'loginCallbackAsync_error') {
+          if (this.idpErrorNotificationClose !== null) {
+            this.idpErrorNotificationClose()
+            this.idpErrorNotificationClose = null
+          }
+          if ((data as Error).message.includes('login_required')) {
+            // handle aborted / invalid login event from IdP
+            this.loadingState = UserLoadingState.UNAUTHENTICATED
+          } else {
+            this.idpErrorNotificationClose = Notifier.showErrorMessage('Login failed, please try again.', false)
+          }
+        } else if (name === 'logout_from_another_tab' || (
+          name === 'refreshTokensAsync_error' && (data as Error).message.includes('session lost'))
+        ) {
+          this.loadingState = UserLoadingState.UNAUTHENTICATED
+          window.location.reload()
+        } else {
+          // eslint-disable-next-line no-console
+          console.log(`OIDC (error) event ${name}!`)
+          // eslint-disable-next-line no-console
+          console.log(data)
+          if (this.idpErrorNotificationClose !== null) {
+            this.idpErrorNotificationClose()
+            this.idpErrorNotificationClose = null
+          }
+          this.idpErrorNotificationClose = Notifier.showErrorMessage(`Error handling OIDC tokens! You might not be able to save any of
+            your work. Error code: ${name}, data=${data as string}`, false)
         }
-      })
-
-      this.idpUserManager.events.addAccessTokenExpired(() => {
-        Notifier.showErrorMessage('Your access token has expired. Please make sure that you have a working internet connection.')
       })
 
       // check for callback
@@ -88,76 +92,83 @@ export const useUserStore = defineStore('user', {
         (process.env.VUE_ROUTER_MODE === 'hash' &&
           window.location.href.endsWith(IDP_CALLBACK_URI))
       ) {
+        const redirectUrl = OidcUtils.getRedirectUrl('default')
         try {
-          const user = await this.idpUserManager.signinCallback()
-          if (user !== undefined) {
-            this.userInfo = user
-            this.loadingState = UserLoadingState.LOADED
-
+          // this call will set the loading state to authenticated once tokens become available
+          const loginCallback = await this.idpOidcClient.loginCallbackAsync()
+          if (loginCallback.callbackPath !== undefined) {
             // redirect user back to original URL
-            if (user.state !== undefined) {
-              const userState = user.state as IAuthenticationState
-              await this.router.replace(userState.redirectUri)
-            }
-
-            // intentionally, we do not await this promise here as we are not interested in the outcome
-            // we just want to trigger the process.
-            this.idpUserManager.clearStaleState()
-
-            this.idpUserManager.startSilentRenew()
-
-            return
+            await this.router.replace(loginCallback.callbackPath)
           }
         } catch (err) {
-          // just ignore the error as it might say no state found in storage
-          // eslint-disable-next-line no-console
-          console.warn(err)
+          const castErr: Error = err as Error
+          // handle IdP login_required error
+          if (castErr.message.includes('login_required')) {
+            this.loadingState = UserLoadingState.UNAUTHENTICATED
+            // redirect user back to original URL
+            await this.router.replace(redirectUrl)
+          } else {
+            // just re-throw the error
+            throw err
+          }
         }
-      }
-
-      const user = await this.idpUserManager.getUser()
-      if (user === null) {
-        // eslint-disable-next-line no-console
-        console.debug('No user loaded!')
-      } else if (user.expired) {
-        // eslint-disable-next-line no-console
-        console.debug('Found user, but user has already expired tokens')
       } else {
-        this.idpUserManager.startSilentRenew()
-        this.userInfo = user
-        this.loadingState = UserLoadingState.LOADED
+        // we did no load any user, but finished loading, so we should get the user state (start login, but without prompting)
+        this.loadingState = UserLoadingState.UNDECIDED
+        await this.loginUser(false)
       }
     },
 
-    async loginUser(postLoginUrl?: string): Promise<void> {
-      if (this.authenticated) {
+    // Logs in a user. The user will be, on successful login, redirected to postLoginUrl.
+    // If this is not set, the current path will be used.
+    // If require is false, it is just checked whether the user can be logged in, but no user interaction will take place.
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    async loginUser(require?: boolean, postLoginUrl?: string): Promise<void> {
+      if (this.loadingState === UserLoadingState.AUTHENTICATED) {
         // return early as we are already authenticated
         return
       }
-
-      let currentRoute =
-        window.location.pathname +
-        window.location.search +
-        window.location.hash
-      if (process.env.VUE_ROUTER_MODE === 'hash') {
-        currentRoute = window.location.hash.substring(1)
+      if (require === false && this.loadingState === UserLoadingState.UNAUTHENTICATED) {
+        // return as we already know the user has no IdP session, so we don't need to check again
+        return
+      }
+      if (this.loadingState === UserLoadingState.LOADING) {
+        // eslint-disable-next-line no-console
+        console.log('Ignoring login request as user is still loading!')
+        return
       }
 
-      const authenticationState: IAuthenticationState = {
-        redirectUri: postLoginUrl === undefined ? currentRoute : postLoginUrl,
+      if (postLoginUrl === undefined) {
+        if (process.env.VUE_ROUTER_MODE === 'hash') {
+          postLoginUrl = window.location.hash.substring(1)
+        } else {
+          postLoginUrl =
+            window.location.pathname +
+            window.location.search +
+            window.location.hash
+        }
       }
 
-      await this.idpUserManager.signinRedirect({ state: authenticationState })
+      const extras: StringMap = {}
+      if (require === false) {
+        extras.prompt = 'none'
+      }
+
+      await this.idpOidcClient.loginAsync(postLoginUrl, extras)
+
+      // just wait forever
+      await new Promise(() => {
+        // intentionally empty
+      })
     },
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async logoutUser(postLogoutUrl: string): Promise<void> {
       if (!this.authenticated) {
         return
       }
 
-      await this.idpUserManager.signoutRedirect({
-        post_logout_redirect_uri: postLogoutUrl,
-      })
+      await this.idpOidcClient.logoutAsync()
     },
   },
 })

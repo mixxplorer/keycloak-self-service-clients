@@ -36,7 +36,7 @@ export default route(function (/* { store, ssrContext } */) {
     history: createHistory(process.env.VUE_ROUTER_BASE),
   })
 
-  Router.beforeEach((to, from, next) => {
+  Router.beforeEach(async (to, from, next) => {
     const userStore = useUserStore()
     if (to.meta?.title) {
       document.title = (to.meta.title as string) || 'Self Service OIDC Clients'
@@ -44,9 +44,11 @@ export default route(function (/* { store, ssrContext } */) {
       document.title = 'Self Service OIDC Clients'
     }
 
-    if (to.meta?.requiresAuth && !userStore.authenticated) {
-      userStore.loginUser(to.fullPath)
+    if (to.meta?.requiresAuth) {
+      await userStore.loginUser(true, to.fullPath)
+      next()
     } else {
+      await userStore.loginUser(false, to.fullPath)
       next()
     }
   })

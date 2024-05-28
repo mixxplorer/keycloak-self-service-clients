@@ -13,13 +13,13 @@ enum ErrorType {
 export class BaseAPI {
   protected static get token(): string {
     const userStore = useUserStore()
-    return userStore.userInfo?.access_token as string
+    return userStore.idpOidcClient.tokens.accessToken
   }
 
   protected static async checkAuthorizationToken(): Promise<void> {
     const userStore = useUserStore()
     if (!userStore.hasValidTokens) {
-      await userStore.idpUserManager.getUser()
+      await userStore.idpOidcClient.getValidTokenAsync(200, 50)
     }
   }
 
