@@ -11,6 +11,8 @@
         row-key="clientId"
         :filter="filter"
         :loading="loading"
+        hide-pagination
+        :rows-per-page-options="[0]"
       >
         <template v-slot:top-right>
           <q-input
