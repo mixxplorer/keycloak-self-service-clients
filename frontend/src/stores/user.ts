@@ -53,7 +53,14 @@ export const useUserStore = defineStore('user', {
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           this.userInfo = this.idpOidcClient.tokens.idTokenPayload as IUserInfo
           this.loadingState = UserLoadingState.AUTHENTICATED
-        } else if (['token_timer', 'loginAsync_begin', 'loginCallbackAsync_begin', 'loginCallbackAsync_end'].includes(name)) {
+        } else if ([
+          'token_timer',
+          'loginAsync_begin',
+          'loginCallbackAsync_begin',
+          'loginCallbackAsync_end',
+          'refreshTokensAsync_begin',
+          'refreshTokensAsync_end',
+        ].includes(name)) {
           // ignore these events, they are not useful for us
         } else if (name === 'loginCallbackAsync_error') {
           if (this.idpErrorNotificationClose !== null) {
