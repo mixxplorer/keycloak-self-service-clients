@@ -8,6 +8,7 @@
         <q-spinner-dots color="primary" size="50px" />
       </div>
       <q-form v-else class="q-gutter-md" @submit="saveClient">
+        <h2>Metadata</h2>
         <q-input
           v-model="client.clientId"
           filled
@@ -30,6 +31,18 @@
             </a>
           </template>
         </q-input>
+
+        <q-item class="form-toggle-item" tag="label">
+          <q-item-section avatar>
+            <q-toggle v-model="client.enabled" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Enable Client</q-item-label>
+            <q-item-label caption>
+              Disabled Client will not perform any authentication.
+            </q-item-label>
+          </q-item-section>
+        </q-item>
 
         <q-item class="form-toggle-item" tag="label">
           <q-item-section avatar>
@@ -61,6 +74,8 @@
           label="Client description"
           hint="A description users will see in their account console."
         />
+
+        <h2 class="q-mt-xl">URIs</h2>
 
         <q-input
           v-model="client.rootUrl"
@@ -104,6 +119,8 @@
             Please narrow down the selection as much as possible as this prevents open redirects via the IdP.
             Relative paths are supported in combination with Root URL."
         />
+
+        <h2 class="q-mt-xl">Logout</h2>
 
         <q-list bordered>
           <q-expansion-item
@@ -276,18 +293,6 @@
             Please narrow down the selection as much as possible as this prevents open redirects via the IdP.
             Relative paths are supported in combination with Root URL."
         />
-
-        <q-item class="form-toggle-item" tag="label">
-          <q-item-section avatar>
-            <q-toggle v-model="client.enabled" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Enable Client</q-item-label>
-            <q-item-label caption>
-              Disabled Client will not perform any authentication.
-            </q-item-label>
-          </q-item-section>
-        </q-item>
 
         <div class="row justify-end q-mt-md">
           <q-btn
