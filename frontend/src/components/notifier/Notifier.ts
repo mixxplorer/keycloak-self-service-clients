@@ -1,4 +1,3 @@
-/* eslint @typescript-eslint/ban-types: 0 */
 import { Notify, QNotifyUpdateOptions } from 'quasar'
 export class Notifier {
   // Chose return type Function because Quasar is returning it as well
@@ -6,7 +5,7 @@ export class Notifier {
     return Notify.create({
       type: 'positive',
       message,
-      color: 'primary',
+      color: 'green',
       closeBtn: false,
       actions: [
         {
@@ -52,6 +51,6 @@ export class Notifier {
   }
 
   public static showDefaultSaveSuccessMessage(): (props?: QNotifyUpdateOptions | undefined) => void {
-    return this.showSuccessMessage('Saving successful!')
+    return this.showSuccessMessage('Changes successfully saved!')
   }
 }

@@ -31,14 +31,13 @@ export interface FormListInputProps {
   headerLabel: string;
   hint: string;
   defaultOpened: boolean;
-  modelValue: string[];
 }
 
 const props = defineProps<FormListInputProps>()
-const emit = defineEmits(['update:modelValue'])
+const formValue = defineModel({ type: Array<string>, default: [] })
 
 const formInputArray = computed(() => {
-  const inputs = props.modelValue.slice()
+  const inputs = formValue.value.slice()
   inputs.push('')
   let inputCounter = 0
   return inputs.map((val) => {
@@ -53,13 +52,13 @@ const formInputArray = computed(() => {
 })
 
 function updateInput(idx: number, newSingleVal: string) {
-  const newVal = props.modelValue.slice()
+  const newVal = formValue.value.slice()
   // remove entry if new value is empty
   if (newSingleVal === '' || newSingleVal === null) {
     newVal.splice(idx, 1)
   } else {
     newVal[idx] = newSingleVal
   }
-  emit('update:modelValue', newVal)
+  formValue.value = newVal
 }
 </script>
