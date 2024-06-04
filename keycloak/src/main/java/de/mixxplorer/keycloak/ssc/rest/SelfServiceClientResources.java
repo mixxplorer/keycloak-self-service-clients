@@ -2,6 +2,7 @@ package de.mixxplorer.keycloak.ssc.rest;
 
 import de.mixxplorer.keycloak.ssc.rest.dto.SelfServiceClientRepresentation;
 import de.mixxplorer.keycloak.ssc.rest.dto.SelfServiceClientWritableRepresentation;
+import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -90,7 +91,15 @@ public class SelfServiceClientResources {
             // users cannot enable or disable service accounts for a client
 
             if (rep.getClientId() != null && !rep.getClientId().equals(clientModel.getClientId())) {
-                new ClientManager(new RealmManager(session)).clientIdChanged(clientModel, rep);
+                // users are not allowed to change the client ID.
+                // Imaging the following case:
+                // * user creates a client
+                // * admin manually enables a specific functionality
+                // * user renames the client
+                // * user tricks the admin to enable another specific functionality for a now "new" client (from admin side)
+                // * client might have way too many rights, causing confusion for the admins
+                // Therefore: We do not allow changing client IDs
+                throw new BadRequestException("Client ID must not change");
             }
 
             // We do not allow enabling authorization services for ssc clients, but an admin might have them enabled for

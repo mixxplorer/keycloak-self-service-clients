@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <div class="page-content">
-      <h1 v-if="clientUuid !== null">Edit Client</h1>
+      <h1 v-if="isEditForm">Edit Client</h1>
       <h1 v-else>Add New Client</h1>
 
       <div v-if="loading" class="row justify-center q-my-md">
@@ -12,12 +12,13 @@
           v-model="client.clientId"
           filled
           label="Client ID"
-          hint="A unique (OIDC) client ID."
+          :hint="isEditForm ? 'You cannot change the client ID.' : 'A unique (OIDC) client ID.'"
           lazy-rules
           :rules="[
             (val) => (val && val.length >= 10) || 'Please type at least 10 chars',
             (val: string) => val.startsWith('ssc-') || 'Your client ID must start with \'ssc-\''
           ]"
+          :readonly="isEditForm"
         >
           <template v-slot:append>
             <a title="Copy client ID to clipboard">
@@ -290,7 +291,7 @@
 
         <div class="row justify-end q-mt-md">
           <q-btn
-            v-if="clientUuid !== null"
+            v-if="isEditForm"
             class="q-mr-sm"
             outline
             label="Delete"
@@ -311,7 +312,7 @@
             </q-card>
           </q-dialog>
           <q-btn
-            :label="clientUuid !== null ? 'Save' : 'Create'"
+            :label="isEditForm ? 'Save' : 'Create'"
             type="submit"
             color="primary"
           />
@@ -323,10 +324,11 @@
 
 <script setup lang="ts">
 import { copyToClipboard } from 'quasar'
-import { Ref, ref, watch } from 'vue'
+import { Ref, computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import FormListInput from 'src/components/FormListInput.vue'
+import { Notifier } from 'src/components/notifier/Notifier'
 import { IWritableClient } from 'src/definitions/Client'
 import { KeycloakRequestAPI } from 'src/requestAPI/KeycloakRequestAPI'
 
@@ -356,6 +358,8 @@ watch(
     loadClient()
   },
 )
+
+const isEditForm = computed(() => clientUuid.value !== null)
 
 const client: Ref<IWritableClient> = ref({
   clientId: 'ssc-',
@@ -393,6 +397,7 @@ async function saveClient() {
   try {
     if (clientUuid.value === null) {
       const saveResult = await KeycloakRequestAPI.clientCreate(client.value)
+      Notifier.showDefaultSaveSuccessMessage()
 
       client.value = saveResult.data
       clientUuid.value = saveResult.data.id
@@ -401,6 +406,7 @@ async function saveClient() {
         clientUuid.value,
         client.value,
       )
+      Notifier.showDefaultSaveSuccessMessage()
     }
   } finally {
     loading.value = false
