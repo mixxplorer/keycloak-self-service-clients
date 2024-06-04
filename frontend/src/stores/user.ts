@@ -169,13 +169,12 @@ export const useUserStore = defineStore('user', {
       })
     },
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async logoutUser(postLogoutUrl: string): Promise<void> {
       if (!this.authenticated) {
         return
       }
 
-      await this.idpOidcClient.logoutAsync()
+      await this.idpOidcClient.logoutAsync(postLogoutUrl)
     },
   },
 })

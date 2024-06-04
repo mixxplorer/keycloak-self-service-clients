@@ -50,6 +50,16 @@
           </q-item-section>
         </q-item>
 
+        <q-item v-if="userStore.authenticated" clickable tag="a" @click="userStore.logoutUser('/')">
+          <q-item-section avatar>
+            <q-icon name="logout" />
+          </q-item-section>
+
+          <q-item-section>
+            <q-item-label>Logout</q-item-label>
+          </q-item-section>
+        </q-item>
+
         <q-item-label header>More information</q-item-label>
 
         <EssentialLink
@@ -72,10 +82,13 @@ import { ref } from 'vue'
 import EssentialLink, {
   EssentialLinkProps,
 } from 'components/EssentialLink.vue'
+import { useUserStore } from 'src/stores/user'
 
 defineOptions({
   name: 'MainLayout',
 })
+
+const userStore = useUserStore()
 
 const linksList: EssentialLinkProps[] = [
   {
