@@ -94,7 +94,7 @@ const columns: QTableColumn[] = [
     label: 'Actions',
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     field: (row: IClient) => row.id,
-    align: 'right',
+    align: 'center',
   },
 ]
 
