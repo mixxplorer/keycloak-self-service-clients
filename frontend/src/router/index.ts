@@ -38,11 +38,7 @@ export default route(function (/* { store, ssrContext } */) {
 
   Router.beforeEach(async (to, from, next) => {
     const userStore = useUserStore()
-    if (to.meta?.title) {
-      document.title = (to.meta.title as string) || 'Self Service OIDC Clients'
-    } else {
-      document.title = 'Self Service OIDC Clients'
-    }
+    document.title = (to.meta?.title as string) || 'Self Service OIDC Clients'
 
     if (to.meta?.requiresAuth) {
       await userStore.loginUser(true, to.fullPath)

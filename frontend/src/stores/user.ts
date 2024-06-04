@@ -80,9 +80,9 @@ export const useUserStore = defineStore('user', {
           window.location.reload()
         } else {
           // eslint-disable-next-line no-console
-          console.log(`OIDC (error) event ${name}!`)
+          console.warn(`OIDC (error) event ${name}!`)
           // eslint-disable-next-line no-console
-          console.log(data)
+          console.warn(data)
           if (this.idpErrorNotificationClose !== null) {
             this.idpErrorNotificationClose()
             this.idpErrorNotificationClose = null

@@ -1,4 +1,3 @@
-// import { Notifier } from 'components/notifier/Notifier'
 import { ILOidcLocation, OidcClient, OidcConfiguration, OidcLocation, TokenAutomaticRenewMode } from '@axa-fr/oidc-client'
 
 import {
@@ -37,13 +36,6 @@ export class OidcUtils {
   }
 
   public static getNewOidcClient(): OidcClient {
-    // const userManager = new UserManager({
-    //   authority: IDP_URL,
-    //   client_id: KEYCLOAK_CLIENT_ID,
-    //   redirect_uri: this.generateRedirectUri(),
-    //   stopCheckSessionOnError: false,
-    // })
-
     const configuration: OidcConfiguration = {
       client_id: KEYCLOAK_CLIENT_ID,
       redirect_uri: this.generateRedirectUri(),
