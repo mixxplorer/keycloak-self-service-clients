@@ -317,6 +317,27 @@
             </q-card>
           </q-dialog>
           <q-btn
+            v-if="!isEditForm"
+            class="q-mr-sm"
+            outline
+            label="Reset"
+            color="negative"
+            @click="confirmResetDialog = true"
+          />
+          <q-dialog v-model="confirmResetDialog">
+            <q-card>
+              <q-card-section class="row items-center">
+                <q-avatar icon="warning" text-color="negative" />
+                <span class="q-ml-sm">Are you sure to reset the form?</span>
+              </q-card-section>
+
+              <q-card-actions align="right">
+                <q-btn v-close-popup flat label="Cancel" color="primary" />
+                <q-btn v-close-popup flat label="Reset" color="negative" @click="resetForm()" />
+              </q-card-actions>
+            </q-card>
+          </q-dialog>
+          <q-btn
             :label="isEditForm ? 'Save' : 'Create'"
             type="submit"
             color="primary"
@@ -366,7 +387,7 @@ watch(
 
 const isEditForm = computed(() => clientUuid.value !== null)
 
-const client: Ref<IWritableClient> = ref({
+const defaultClient = {
   clientId: 'ssc-',
   name: '',
   description: '',
@@ -382,7 +403,9 @@ const client: Ref<IWritableClient> = ref({
   backchannelLogoutUrl: '',
   frontchannelLogoutUrl: '',
   postLogoutRedirectUris: ['+'],
-})
+}
+
+const client: Ref<IWritableClient> = ref(defaultClient)
 
 async function loadClient() {
   if (clientUuid.value === null) {
@@ -406,6 +429,7 @@ async function saveClient() {
 
       client.value = saveResult.data
       clientUuid.value = saveResult.data.id
+      router.push({ name: 'ClientEdit', params: { clientUuid: clientUuid.value } })
     } else {
       await KeycloakRequestAPI.clientUpdate(
         clientUuid.value,
@@ -419,7 +443,6 @@ async function saveClient() {
 }
 
 const confirmDeletionDialog = ref(false)
-
 async function deleteClient() {
   loading.value = true
   try {
@@ -428,6 +451,11 @@ async function deleteClient() {
   } finally {
     loading.value = false
   }
+}
+
+const confirmResetDialog = ref(false)
+function resetForm() {
+  client.value = defaultClient
 }
 </script>
 

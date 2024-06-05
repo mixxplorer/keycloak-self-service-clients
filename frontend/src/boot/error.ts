@@ -25,6 +25,15 @@ export default boot((): void => {
           (Status code ${errorEvent.reason.response.status}). For more information see dev console.`,
           true,
         )
+      } else if (
+        errorEvent.reason.response.data !== undefined &&
+        typeof errorEvent.reason.response.data.errorMessage === 'string'
+      ) {
+        Notifier.showErrorMessage(
+          `Network request failed with "${errorEvent.reason.response.data.errorMessage}"
+          (Status code ${errorEvent.reason.response.status}). For more information see dev console.`,
+          true,
+        )
       } else {
         Notifier.showErrorMessage(
           `Network request failed with "${errorEvent.reason.message}". For more information see dev console.`,
