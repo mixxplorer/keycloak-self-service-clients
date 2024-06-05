@@ -73,6 +73,7 @@
           filled
           label="Client description"
           hint="A description users will see in their account console."
+          type="textarea"
         />
 
         <h2 class="q-mt-xl">URIs</h2>
