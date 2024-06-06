@@ -52,8 +52,8 @@ docker-frontend:
     name: gcr.io/kaniko-project/executor:v1.14.0-debug
     entrypoint: [""]
   variables:
-    IMAGE_TAG_ENV: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:frontend-$CI_PIPELINE_IID
-    IMAGE_TAG_GENERAL: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:frontend-latest
+    IMAGE_TAG_ENV: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG/frontend:$CI_PIPELINE_IID
+    IMAGE_TAG_GENERAL: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG/frontend:latest
   needs:
     - job: build-frontend
       artifacts: true

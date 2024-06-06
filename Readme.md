@@ -55,8 +55,8 @@ Then, the API is ready to use.
 
 ### Web frontend
 
-* Get the latest Docker container (`dr.rechenknecht.net/mixxplorer/keycloak/self-service-clients/main:frontend-latest` or take a look at [GitLab registry](https://rechenknecht.net/mixxplorer/keycloak/self-service-clients/container_registry)). Versioned container are available as well, please check [the registry](https://rechenknecht.net/mixxplorer/keycloak/self-service-clients/container_registry).
-* Run by e.g. `docker run -it --rm -p 127.0.0.1:1235:8080 -e KEYCLOAK_URL=http://127.0.0.1:8080 -e KEYCLOAK_REALM=test dr.rechenknecht.net/mixxplorer/keycloak/self-service-clients/main:latest`
+* Get the latest Docker container (`dr.rechenknecht.net/mixxplorer/keycloak/self-service-clients/main/frontend:latest` or take a look at [GitLab registry](https://rechenknecht.net/mixxplorer/keycloak/self-service-clients/container_registry)). Versioned container are available as well, please check [the registry](https://rechenknecht.net/mixxplorer/keycloak/self-service-clients/container_registry).
+* Run by e.g. `docker run -it --rm -p 127.0.0.1:1235:8080 -e KEYCLOAK_URL=http://127.0.0.1:8080 -e KEYCLOAK_REALM=test dr.rechenknecht.net/mixxplorer/keycloak/self-service-clients/main/frontend:latest`
 * Access the frontend, everything should work.
 
 ## Acknowledgments
