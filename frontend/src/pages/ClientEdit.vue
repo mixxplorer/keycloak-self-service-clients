@@ -388,7 +388,7 @@ watch(
 
 const isEditForm = computed(() => clientUuid.value !== null)
 
-const defaultClient = {
+const defaultClient: IWritableClient = {
   clientId: 'ssc-',
   name: '',
   description: '',
@@ -406,7 +406,7 @@ const defaultClient = {
   postLogoutRedirectUris: ['+'],
 }
 
-const client: Ref<IWritableClient> = ref(defaultClient)
+const client: Ref<IWritableClient> = ref(structuredClone(defaultClient))
 
 async function loadClient() {
   if (clientUuid.value === null) {
@@ -456,7 +456,7 @@ async function deleteClient() {
 
 const confirmResetDialog = ref(false)
 function resetForm() {
-  client.value = defaultClient
+  client.value = structuredClone(defaultClient)
 }
 </script>
 
