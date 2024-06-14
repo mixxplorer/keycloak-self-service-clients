@@ -1,15 +1,10 @@
 p {
   padding: 0;
   margin: 0 0 0.5em;
+  line-height: 150% !important;
 }
 
-ul {
-  list-style-type: none;
-  margin: 0 0 0.5em 0;
-  padding-left: 0;
-}
-
-ol {
+ul, ol {
   margin: 0 0 0.5em 0;
   margin-left: 30px;
   padding-left: 0;
@@ -22,7 +17,7 @@ li {
 
 h1 {
   padding: 0;
-  font-size: 2.5em;
+  font-size: 2em;
   margin: 0 0 0.5em;
   line-height: unset;
   letter-spacing: unset;
@@ -37,14 +32,27 @@ h2 {
   letter-spacing: unset;
 }
 
+h3 {
+  padding: 0;
+  font-size: 1.2em;
+  font-weight: 500;
+  line-height: 1.2em;
+  margin: 0 0 0.5em;
+  letter-spacing: unset;
+}
+
+h4 {
+  padding: 0;
+  font-size: 1.15em;
+  font-weight: 500;
+  line-height: 1.2em;
+  margin: 0 0 0.5em;
+  letter-spacing: unset;
+}
+
 // for breakpoints usage see: https://quasar.dev/style/breakpoints
 .page-content {
-  @media only screen and (max-width: $breakpoint-xs-max) {
-    padding-top: 15px;
-  }
-  @media only screen and (min-width: $breakpoint-sm-min) {
-    padding-top: 40px;
-  }
+  padding-top: 10px;
   box-sizing: border-box;
   max-width: $pageWidth;
   margin-left: auto;

@@ -70,7 +70,7 @@
       </q-list>
     </q-drawer>
 
-    <q-page-container>
+    <q-page-container class="q-px-sm">
       <router-view />
     </q-page-container>
   </q-layout>

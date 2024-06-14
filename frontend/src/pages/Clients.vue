@@ -36,6 +36,17 @@
                 flat
                 type="a"
                 :to="{
+                  name: 'ClientOverview',
+                  params: { clientUuid: props.value },
+                }"
+              >
+                View
+              </q-btn>
+              <q-btn
+                color="primary"
+                flat
+                type="a"
+                :to="{
                   name: 'ClientEdit',
                   params: { clientUuid: props.value },
                 }"

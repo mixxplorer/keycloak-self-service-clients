@@ -25,12 +25,21 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/ClientEdit.vue'),
       },
       {
+        name: 'ClientOverview',
+        meta: {
+          title: 'View Client',
+          requiresAuth: true,
+        },
+        path: 'clients/:clientUuid',
+        component: () => import('pages/Client.vue'),
+      },
+      {
         name: 'ClientEdit',
         meta: {
           title: 'Edit Client',
           requiresAuth: true,
         },
-        path: 'clients/:clientUuid',
+        path: 'clients/:clientUuid/edit',
         component: () => import('pages/ClientEdit.vue'),
       },
     ],

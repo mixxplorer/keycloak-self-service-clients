@@ -1,9 +1,9 @@
 import { AxiosError, AxiosResponse } from 'axios'
 
-import { Notifier } from 'components/notifier/Notifier'
 import { DEFAULT_REQUEST_RETRY_TIME } from 'src/app-constants'
 import { NetworkError } from 'src/requestAPI/Errors'
 import { useUserStore } from 'src/stores/user'
+import { Notifier } from 'src/utils/notifier'
 
 enum ErrorType {
   Network,

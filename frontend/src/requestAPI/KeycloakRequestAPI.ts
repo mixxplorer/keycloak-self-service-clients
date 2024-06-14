@@ -133,6 +133,30 @@ export class KeycloakRequestAPI extends BaseAPI {
     })
   }
 
+  public static async clientRegenerateSecret(
+    clientUuid: string,
+    params?: Record<string, unknown>,
+    cancelToken?: CancelToken,
+  ): Promise<AxiosResponse<IClient>> {
+    const requestURL = `${IDP_URL}/self-service-clients/clients/${clientUuid}/secret/regenerate`
+
+    return this.networkResultWrapper(() => {
+      const header = {
+        Authorization: `Bearer ${this.token}`,
+      }
+      return axios.post(
+        requestURL,
+        {},
+        {
+          headers: header,
+          params,
+          cancelToken,
+          timeout: DEFAULT_REQUEST_TIMEOUT,
+        },
+      )
+    })
+  }
+
   public static async clientDelete(
     clientUuid: string,
     params?: Record<string, unknown>,

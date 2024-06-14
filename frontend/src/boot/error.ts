@@ -3,7 +3,7 @@
 import { AxiosError } from 'axios'
 import { boot } from 'quasar/wrappers'
 
-import { Notifier } from 'src/components/notifier/Notifier'
+import { Notifier } from 'src/utils/notifier'
 
 interface ErrorPayload {
   error?: string;
