@@ -6,7 +6,9 @@ import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -18,15 +20,19 @@ import org.keycloak.models.ClientSecretConstants;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.ModelDuplicateException;
 import org.keycloak.models.RealmModel;
+import org.keycloak.models.utils.KeycloakModelUtils;
 import org.keycloak.models.utils.ModelToRepresentation;
 import org.keycloak.models.utils.RepresentationToModel;
+import org.keycloak.protocol.oidc.OIDCClientSecretConfigWrapper;
 import org.keycloak.representations.idm.ClientRepresentation;
+import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.services.ErrorResponse;
 import org.keycloak.services.ErrorResponseException;
 import org.keycloak.services.clientpolicy.ClientPolicyException;
 import org.keycloak.services.clientpolicy.context.AdminClientUnregisterContext;
 import org.keycloak.services.clientpolicy.context.AdminClientUpdateContext;
 import org.keycloak.services.clientpolicy.context.AdminClientUpdatedContext;
+import org.keycloak.services.clientpolicy.context.ClientSecretRotationContext;
 import org.keycloak.services.managers.AuthenticationManager;
 import org.keycloak.services.managers.ClientManager;
 import org.keycloak.services.managers.RealmManager;
@@ -129,5 +135,38 @@ public class SelfServiceClientResources {
         } catch (ClientPolicyException cpe) {
             throw new ErrorResponseException(cpe.getError(), cpe.getErrorDetail(), Response.Status.BAD_REQUEST);
         }
+    }
+
+    // based on org.keycloak.services.resources.admin.ClientResource (org/keycloak/services/resources/admin/ClientResource.java)
+    @Path("secret/regenerate")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    public SelfServiceClientRepresentation regenerateSecret() {
+        try {
+            session.setAttribute(ClientSecretConstants.CLIENT_SECRET_ROTATION_ENABLED,Boolean.FALSE);
+
+            ClientRepresentation representation = ModelToRepresentation.toRepresentation(clientModel, session);
+            ClientSecretRotationContext secretRotationContext = new ClientSecretRotationContext(
+                    representation, clientModel, clientModel.getSecret());
+
+            String secret = KeycloakModelUtils.generateSecret(clientModel);
+
+            session.clientPolicy().triggerOnEvent(secretRotationContext);
+
+            CredentialRepresentation rep = new CredentialRepresentation();
+            rep.setType(CredentialRepresentation.SECRET);
+            rep.setValue(secret);
+
+            if (!(boolean) session.getAttribute(ClientSecretConstants.CLIENT_SECRET_ROTATION_ENABLED)) {
+                OIDCClientSecretConfigWrapper.fromClientModel(clientModel).removeClientSecretRotationInfo();
+            }
+
+            adminEvent.operation(OperationType.ACTION).resourcePath(session.getContext().getUri()).representation(rep).success();
+            session.removeAttribute(ClientSecretConstants.CLIENT_SECRET_ROTATION_ENABLED);
+        } catch (ClientPolicyException cpe) {
+            throw new ErrorResponseException(cpe.getError(), cpe.getErrorDetail(),
+                    Response.Status.BAD_REQUEST);
+        }
+        return get();
     }
 }

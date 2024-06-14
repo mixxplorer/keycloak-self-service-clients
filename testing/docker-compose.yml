@@ -2,7 +2,7 @@ version: "3.2"
 
 services:
   keycloak:
-    image: quay.io/keycloak/keycloak:24.0.4
+    image: quay.io/keycloak/keycloak:24.0.5
     container_name: self-service-clients-kc-test
     environment:
       DB_VENDOR: h2
