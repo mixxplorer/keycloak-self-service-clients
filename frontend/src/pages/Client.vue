@@ -217,14 +217,24 @@
                         Or with other words: Is the session within your app ended once the Keycloak session is ended?
                       </p>
                       <p>
-                        This is particularly important as users might think they logged out from one service they presented their
-                        credentials but still remain logged in with e.g. your service.
-                        This might happen as when a user logs in to a particular app, a Keycloak session will be opened.<br>
-                        When a user accesses another app, which requires a login, the user might not even notice the login process if e.g.
-                        the App is redirecting the user automatically to Keycloak.
-                        As there is an already active Keycloak session, the user is not asked for confirmation and thus logged in to the second app.
-                        Therefore, a log out should work, like the log in, for all apps at the same time.
+                        This is particularly important as users might expect to be logged out of all apps they use with Single-Sign-On.
+                        When your service does not close its own internal session correctly when a user presses the logout button in another app,
+                        a false impression of security may be created.
+                        <br>
+                        An example:
                       </p>
+                      <ol>
+                        <li>A user logs in to a particular app (App 1), a Keycloak session will be opened.</li>
+                        <li>
+                          The user accesses another app (App 2), which requires a login. As the user is already authenticated the redirection to Keycloak
+                          (and thus the authentication) is invisible to the user (Single Sign On).
+                        </li>
+                        <li>
+                          On logout, with non-working single logout, only the session on App 1 or App 2 will be ended.
+                          But the app is probably telling the user that the "session has ended"
+                        </li>
+                        <li>The user might wrongly believe that this ended all sessions, but this would not be the case.</li>
+                      </ol>
                       <p>
                         You should test a working front- or back-channel logout by logging in to your application,
                         then logout from another app (e.g. <a @click="userStore.logoutUser('/')">log out here</a>).
