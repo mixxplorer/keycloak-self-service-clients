@@ -331,6 +331,7 @@ import ClipboardCopy from 'src/components/ClipboardCopy.vue'
 import { IClient } from 'src/definitions/Client'
 import { KeycloakRequestAPI } from 'src/requestAPI/KeycloakRequestAPI'
 import { useUserStore } from 'src/stores/user'
+import { Notifier } from 'src/utils/notifier'
 
 defineOptions({
   name: 'ClientsEdit',
@@ -368,7 +369,8 @@ loadClient()
 
 const idpDiscoveryEndpoint = IDP_URL + '/.well-known/openid-configuration'
 
-const hiddenClientSecret = ref('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+const defaultHiddenClientSecret = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+const hiddenClientSecret = ref(defaultHiddenClientSecret)
 const confirmRegenerateClientSecretDialog = ref(false)
 const regenerateSecretLoading = ref(false)
 async function regenerateClientSecret() {
@@ -376,6 +378,8 @@ async function regenerateClientSecret() {
   try {
     const loadResult = await KeycloakRequestAPI.clientRegenerateSecret(clientUuid.value)
     client.value = loadResult.data
+    hiddenClientSecret.value = defaultHiddenClientSecret
+    Notifier.showSuccessMessage('Regenerated client secret!')
   } finally {
     regenerateSecretLoading.value = false
   }
