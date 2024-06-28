@@ -248,13 +248,14 @@
           </q-expansion-item>
         </q-list>
 
-        <h2 class="q-mt-lg">Client settings</h2>
+        <h2 class="q-mt-lg">Client properties</h2>
         <p>Some settings of the client can only changed by admins of this Keycloak instance. Some of them are shown here:</p>
 
         <q-list bordered class="rounded-borders">
           <q-item v-if="!client?.publicClient">
             <q-item-section avatar>
-              <q-icon name="badge" />
+              <q-icon v-if="client?.serviceAccountsEnabled" name="badge" />
+              <q-icon v-else name="key_off" />
             </q-item-section>
             <q-item-section>
               <h3 v-if="client?.serviceAccountsEnabled">Service Accounts Enabled</h3>
@@ -269,7 +270,8 @@
           </q-item>
           <q-item>
             <q-item-section avatar>
-              <q-icon name="password" />
+              <q-icon v-if="client?.standardFlowEnabled" name="key" />
+              <q-icon v-else name="key_off" />
             </q-item-section>
             <q-item-section>
               <h3 v-if="client?.standardFlowEnabled">Standard Authentication Flows Enabled</h3>
@@ -288,7 +290,8 @@
           </q-item>
           <q-item>
             <q-item-section avatar>
-              <q-icon name="password" />
+              <q-icon v-if="client?.directAccessGrantsEnabled" name="key" />
+              <q-icon v-else name="key_off" />
             </q-item-section>
             <q-item-section>
               <h3 v-if="client?.directAccessGrantsEnabled">Direct Access Grants Enabled</h3>
@@ -307,7 +310,8 @@
           </q-item>
           <q-item>
             <q-item-section avatar>
-              <q-icon name="password" />
+              <q-icon v-if="client?.implicitFlowEnabled" name="key" />
+              <q-icon v-else name="key_off" />
             </q-item-section>
             <q-item-section>
               <h3 v-if="client?.implicitFlowEnabled">Implicit Flow Enabled</h3>
