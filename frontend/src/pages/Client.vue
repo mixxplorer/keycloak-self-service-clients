@@ -38,10 +38,12 @@
             </template>
             <q-card>
               <q-card-section>
-                <p>Please set up your app to use the following Open ID Connect (OIDC) Identity Provider (IdP) settings:</p>
+                <p>
+                  Please set up your app to use the correct Open ID Connect (OIDC) Identity Provider (IdP) settings by utilizing either
+                  automatic discovery (preferred) or manual set up:
+                </p>
 
                 <h3>Automatic discovery</h3>
-
                 <p>If your app supports automatic Open ID Connect discovery, please use either of these URLs (depend on the application)</p>
                 <ul>
                   <li>For most applications: <code>{{ IDP_URL }}</code> <ClipboardCopy :value="IDP_URL" /></li>
@@ -53,7 +55,9 @@
                 </ul>
 
                 <h3>Manual set up</h3>
-                <p>Some applications need you to enter single endpoints manually. If you are an application developer, please use Open ID Connect discovery.</p>
+                <p>
+                  Some applications need you to enter specific endpoints manually. If you are an application developer, please use Open ID Connect discovery.
+                </p>
                 <p>
                   If you cannot do anything about it, please take a look at the
                   <a :href="idpDiscoveryEndpoint" target="_blank"> at the discovery endpoint</a>.
@@ -81,7 +85,7 @@
                 </p>
                 <p v-else>
                   You have chosen to use a secret client. Therefore, all requests on behalf of your app must be authenticated with a client secret.
-                  Please configure these settings as client id and client secret.
+                  Please configure these settings as client ID and client secret.
                 </p>
 
                 <p v-if="!client?.publicClient">
