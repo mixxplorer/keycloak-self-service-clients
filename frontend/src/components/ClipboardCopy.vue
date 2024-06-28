@@ -23,10 +23,20 @@ export interface ClipboardCopyFormValueProps {
 const props = defineProps<ClipboardCopyFormValueProps>()
 
 const copied = ref(false)
+const copiedCounter = ref(0)
+
+const copiedIconTimeout = 2500
 
 async function copy() {
   await copyToClipboard(props.value)
+  copiedCounter.value++
+  const thisCopiedCounter = copiedCounter.value
   copied.value = true
+  await new Promise((resolve) => setTimeout(resolve, copiedIconTimeout))
+  // check whether the user clicked another time on the copy button
+  if (thisCopiedCounter === copiedCounter.value) {
+    copied.value = false
+  }
 }
 
 </script>
