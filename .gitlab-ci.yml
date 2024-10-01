@@ -1,5 +1,7 @@
 default:
-  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/gradle:8.7-jdk17
+  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/gradle:8.13-jdk21
+  tags:
+    - kubernetes-executor
 
 stages:
   - test
@@ -26,7 +28,7 @@ build-keycloak-api:
   needs: []
   script:
     - cd keycloak
-    - gradle jar
+    - gradle publish
   artifacts:
     paths:
       - keycloak/build/libs/*.jar
@@ -67,3 +69,19 @@ docker-frontend:
       --destination "${IMAGE_TAG_GENERAL}"
     - echo "Pushed to ${IMAGE_TAG_ENV}"
     - echo "Pushed to ${IMAGE_TAG_GENERAL}"
+
+harbor-push:
+  stage: pack
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: ['']
+  script:
+    - mkdir -p /kaniko/.docker
+    - echo "{\"auths\":{\"${HARBOR_HOST}\":{\"auth\":\"$(echo -n ${HARBOR_USERNAME}:${HARBOR_PASSWORD} | base64 -w 0)\"}}}" > /kaniko/.docker/config.json
+    - >-
+      /kaniko/executor
+      --context "${CI_PROJECT_DIR}/frontend"
+      --dockerfile "${CI_PROJECT_DIR}/frontend/Dockerfile"
+      --destination "${HARBOR_HOST}/${HARBOR_PROJECT}/${CI_PROJECT_NAME}:${CI_COMMIT_TAG}"
+  rules:
+  - if: $CI_COMMIT_TAG
