@@ -1,8 +1,8 @@
-import { OidcClient, StringMap } from '@axa-fr/oidc-client'
+import type { OidcClient, StringMap } from '@axa-fr/oidc-client'
 import { defineStore } from 'pinia'
 
 import { IDP_CALLBACK_URI } from 'src/app-constants'
-import { IUserInfo } from 'src/definitions/UserInfo'
+import type { IUserInfo } from 'src/definitions/UserInfo'
 import { Notifier } from 'src/utils/notifier'
 import { OidcUtils } from 'src/utils/oidc'
 
@@ -50,7 +50,7 @@ export const useUserStore = defineStore('user', {
             this.idpErrorNotificationClose()
             this.idpErrorNotificationClose = null
           }
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
           this.userInfo = this.idpOidcClient.tokens.idTokenPayload as IUserInfo
           this.loadingState = UserLoadingState.AUTHENTICATED
         } else if ([
@@ -129,7 +129,7 @@ export const useUserStore = defineStore('user', {
     // Logs in a user. The user will be, on successful login, redirected to postLoginUrl.
     // If this is not set, the current path will be used.
     // If require is false, it is just checked whether the user can be logged in, but no user interaction will take place.
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     async loginUser(require?: boolean, postLoginUrl?: string): Promise<void> {
       if (this.loadingState === UserLoadingState.AUTHENTICATED) {
         // return early as we are already authenticated

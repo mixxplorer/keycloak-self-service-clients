@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */ // disabled as otherwise we cannot return typed responses
-import axios, { AxiosResponse, CancelToken } from 'axios'
+import type { AxiosResponse, CancelToken } from 'axios'
+import axios from 'axios'
 
 import { DEFAULT_REQUEST_TIMEOUT, IDP_URL } from 'src/app-constants'
-import { IClient, IWritableClient } from 'src/definitions/Client'
+import type { IClient, IWritableClient } from 'src/definitions/Client'
 import { BaseAPI } from 'src/requestAPI/BaseAPI'
 
 export class KeycloakRequestAPI extends BaseAPI {
@@ -37,7 +38,7 @@ export class KeycloakRequestAPI extends BaseAPI {
       return axios.get(requestURL, {
         headers: header,
         params,
-        cancelToken,
+        ...(cancelToken && { cancelToken }),
         timeout: DEFAULT_REQUEST_TIMEOUT,
       })
     })
@@ -57,7 +58,7 @@ export class KeycloakRequestAPI extends BaseAPI {
       return axios.get(requestURL, {
         headers: header,
         params,
-        cancelToken,
+        ...(cancelToken && { cancelToken }),
         timeout: DEFAULT_REQUEST_TIMEOUT,
       })
     })
@@ -101,7 +102,7 @@ export class KeycloakRequestAPI extends BaseAPI {
         {
           headers: header,
           params,
-          cancelToken,
+          ...(cancelToken && { cancelToken }),
           timeout: DEFAULT_REQUEST_TIMEOUT,
         },
       )
@@ -126,7 +127,7 @@ export class KeycloakRequestAPI extends BaseAPI {
         {
           headers: header,
           params,
-          cancelToken,
+          ...(cancelToken && { cancelToken }),
           timeout: DEFAULT_REQUEST_TIMEOUT,
         },
       )
@@ -150,7 +151,7 @@ export class KeycloakRequestAPI extends BaseAPI {
         {
           headers: header,
           params,
-          cancelToken,
+          ...(cancelToken && { cancelToken }),
           timeout: DEFAULT_REQUEST_TIMEOUT,
         },
       )
@@ -173,7 +174,7 @@ export class KeycloakRequestAPI extends BaseAPI {
         {
           headers: header,
           params,
-          cancelToken,
+          ...(cancelToken && { cancelToken }),
           timeout: DEFAULT_REQUEST_TIMEOUT,
         },
       )

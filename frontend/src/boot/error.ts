@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
-import { AxiosError } from 'axios'
+import type { AxiosError } from 'axios'
 import { boot } from 'quasar/wrappers'
 
 import { Notifier } from 'src/utils/notifier'

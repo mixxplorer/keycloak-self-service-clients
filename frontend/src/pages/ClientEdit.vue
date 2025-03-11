@@ -358,12 +358,13 @@
 </template>
 
 <script setup lang="ts">
-import { Ref, computed, ref, watch } from 'vue'
+import type { Ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import ClipboardCopy from 'src/components/ClipboardCopy.vue'
 import FormListInput from 'src/components/FormListInput.vue'
-import { IWritableClient } from 'src/definitions/Client'
+import type { IWritableClient } from 'src/definitions/Client'
 import { KeycloakRequestAPI } from 'src/requestAPI/KeycloakRequestAPI'
 import { Notifier } from 'src/utils/notifier'
 

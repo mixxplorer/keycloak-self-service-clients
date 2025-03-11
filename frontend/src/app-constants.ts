@@ -12,10 +12,8 @@ function getEnvironmentValue(
   environVal?: string,
 ): string {
   if ('APP_ENVIRONMENT' in window) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     const val = (window.APP_ENVIRONMENT as Record<string, string>)[key]
     if (val) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return val
     }
   }

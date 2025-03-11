@@ -13,7 +13,7 @@
 import { ref } from 'vue'
 
 import ExampleComponent from 'components/ExampleComponent.vue'
-import { Todo, Meta } from 'components/models'
+import type { Todo, Meta } from 'components/models'
 
 defineOptions({
   name: 'IndexPage',

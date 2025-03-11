@@ -1,7 +1,7 @@
-import { AxiosError, AxiosResponse } from 'axios'
+import type { AxiosError, AxiosResponse } from 'axios'
 
 import { DEFAULT_REQUEST_RETRY_TIME } from 'src/app-constants'
-import { NetworkError } from 'src/requestAPI/Errors'
+import type { NetworkError } from 'src/requestAPI/Errors'
 import { useUserStore } from 'src/stores/user'
 import { Notifier } from 'src/utils/notifier'
 
@@ -94,7 +94,6 @@ export class BaseAPI {
             errorType = ErrorType.RateLimit
           }
 
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           retryTime =
             +axiosError.response.headers[
               'x-rate-limit-retry-after-milliseconds'

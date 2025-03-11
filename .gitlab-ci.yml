@@ -3,6 +3,9 @@ default:
   tags:
     - kubernetes-executor
 
+variables:
+  NODE_OPTIONS: "--max-old-space-size=8192"
+
 stages:
   - test
   - build
@@ -22,6 +25,10 @@ lint-keycloak-api:
   script:
     - cd keycloak
     - gradle checkstyleMain
+  artifacts:
+    paths:
+      - keycloak/build/reports/checkstyle/*.html
+    expire_in: 1 month
 
 build-keycloak-api:
   stage: build
@@ -36,11 +43,13 @@ build-keycloak-api:
 
 build-frontend:
   stage: build
-  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/library/node:18
+  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/library/node:22
   needs: []
   script:
     - cd frontend
+    - yarn global add @quasar/cli
     - yarn install
+    - quasar prepare
     - yarn lint
     - yarn build
   artifacts:

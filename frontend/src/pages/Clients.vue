@@ -62,10 +62,11 @@
 </template>
 
 <script setup lang="ts">
-import { QTableColumn } from 'quasar'
-import { Ref, ref } from 'vue'
+import type { QTableColumn } from 'quasar'
+import type { Ref } from 'vue'
+import { ref } from 'vue'
 
-import { IClient } from 'src/definitions/Client'
+import type { IClient } from 'src/definitions/Client'
 import { KeycloakRequestAPI } from 'src/requestAPI/KeycloakRequestAPI'
 
 defineOptions({
@@ -103,7 +104,7 @@ const columns: QTableColumn[] = [
   {
     name: 'actions',
     label: 'Actions',
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     field: (row: IClient) => row.id,
     align: 'center',
   },

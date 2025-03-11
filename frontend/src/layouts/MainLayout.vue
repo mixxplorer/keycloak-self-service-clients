@@ -79,9 +79,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-import EssentialLink, {
+import type {
   EssentialLinkProps,
 } from 'components/EssentialLink.vue'
+import EssentialLink from 'components/EssentialLink.vue'
 import { useUserStore } from 'src/stores/user'
 
 defineOptions({

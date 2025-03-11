@@ -1,7 +1,8 @@
-import { Notify, QNotifyUpdateOptions } from 'quasar'
+import type { QNotifyUpdateOptions } from 'quasar'
+import { Notify } from 'quasar'
 export class Notifier {
   // Chose return type Function because Quasar is returning it as well
-  public static showSuccessMessage(message: string, timeout = 2500): (props?: QNotifyUpdateOptions | undefined) => void {
+  public static showSuccessMessage(message: string, timeout = 2500): (props?: QNotifyUpdateOptions) => void {
     return Notify.create({
       type: 'positive',
       message,
@@ -17,7 +18,7 @@ export class Notifier {
     })
   }
 
-  public static showWarningMessage(message: string): (props?: QNotifyUpdateOptions | undefined) => void {
+  public static showWarningMessage(message: string): (props?: QNotifyUpdateOptions) => void {
     return Notify.create({
       type: 'warning',
       message,
@@ -27,7 +28,7 @@ export class Notifier {
   public static showErrorMessage(
     message: string,
     closeBtn?: string | boolean,
-  ): (props?: QNotifyUpdateOptions | undefined) => void {
+  ): (props?: QNotifyUpdateOptions) => void {
     const actionList = []
     if (closeBtn === undefined || closeBtn === true) {
       actionList.push({
@@ -50,7 +51,7 @@ export class Notifier {
     })
   }
 
-  public static showDefaultSaveSuccessMessage(): (props?: QNotifyUpdateOptions | undefined) => void {
+  public static showDefaultSaveSuccessMessage(): (props?: QNotifyUpdateOptions) => void {
     return this.showSuccessMessage('Changes successfully saved!')
   }
 }

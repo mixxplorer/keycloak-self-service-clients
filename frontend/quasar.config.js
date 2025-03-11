@@ -8,10 +8,9 @@
 // Configuration for your app
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { configure } = require('quasar/wrappers')
+import { configure } from 'quasar/wrappers'
 
-module.exports = configure(function (/* ctx */) {
+export default configure(function (/* ctx */) {
   return {
     // https://v2.quasar.dev/quasar-cli-vite/prefetch-feature
     // preFetch: true,
@@ -43,6 +42,12 @@ module.exports = configure(function (/* ctx */) {
       target: {
         browser: ['es2019', 'edge88', 'firefox78', 'chrome87', 'safari13.1'],
         node: 'node20',
+      },
+      typescript: {
+        strict: true, // (recommended) enables strict settings for TypeScript
+        vueShim: true, // required when using ESLint with type-checked rules, will generate a shim file for `*.vue` files
+        extendTsConfig() {
+        },
       },
 
       vueRouterMode: 'history', // available values: 'hash', 'history'
@@ -81,7 +86,6 @@ module.exports = configure(function (/* ctx */) {
               lintCommand: 'eslint "./**/*.{js,ts,mjs,cjs,vue}"',
             },
           },
-          { server: false },
         ],
       ],
     },

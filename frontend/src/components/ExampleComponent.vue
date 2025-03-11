@@ -25,7 +25,7 @@ import { computed, ref } from 'vue'
 import { APP_BASE_URL } from 'src/app-constants'
 import { useUserStore } from 'src/stores/user'
 
-import { Todo, Meta } from './models'
+import type { Todo, Meta } from './models'
 
 interface Props {
   title: string;

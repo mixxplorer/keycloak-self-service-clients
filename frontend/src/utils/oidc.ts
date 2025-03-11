@@ -1,4 +1,5 @@
-import { ILOidcLocation, OidcClient, OidcConfiguration, OidcLocation, TokenAutomaticRenewMode } from '@axa-fr/oidc-client'
+import type { ILOidcLocation, OidcConfiguration } from '@axa-fr/oidc-client'
+import { OidcClient, OidcLocation, TokenAutomaticRenewMode } from '@axa-fr/oidc-client'
 
 import {
   APP_BASE_URL,
@@ -8,7 +9,7 @@ import {
 } from 'src/app-constants'
 
 class ReplaceOidcLocation extends OidcLocation implements ILOidcLocation {
-  open(url: string): void {
+  override open(url: string): void {
     window.location.replace(url)
   }
 }
@@ -56,7 +57,6 @@ export class OidcUtils {
   // with `login_required`, see also https://github.com/AxaFrance/oidc-client/issues/1375
   // This is quite a hack, will remove once the library supports this use case.
   public static getRedirectUrl(configurationName: string): string {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const storageRes = sessionStorage.getItem(`oidc.login.${configurationName}`)
 
     if (storageRes !== null) {

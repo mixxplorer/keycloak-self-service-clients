@@ -337,12 +337,13 @@
 </template>
 
 <script setup lang="ts">
-import { Ref, ref, watch } from 'vue'
+import type { Ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
 import { IDP_URL } from 'src/app-constants'
 import ClipboardCopy from 'src/components/ClipboardCopy.vue'
-import { IClient } from 'src/definitions/Client'
+import type { IClient } from 'src/definitions/Client'
 import { KeycloakRequestAPI } from 'src/requestAPI/KeycloakRequestAPI'
 import { useUserStore } from 'src/stores/user'
 import { Notifier } from 'src/utils/notifier'

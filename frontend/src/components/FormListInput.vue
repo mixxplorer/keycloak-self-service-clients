@@ -1,16 +1,11 @@
 <template>
   <div>
     <q-expansion-item
-      icon="list"
-      :label="props.headerLabel"
-      :caption="props.hint"
+      icon="list" :label="props.headerLabel" :caption="props.hint"
       :default-opened="props.defaultOpened"
     >
       <q-input
-        v-for="item in formInputArray"
-        :key="item.name"
-        filled
-        :modelValue="item.value"
+        v-for="item in formInputArray" :key="item.idx" filled :modelValue="item.value"
         :label="props.inputLabel + ' #' + (item.idx + 1)"
         @update:model-value="updateInput(item.idx, $event as string)"
       />
