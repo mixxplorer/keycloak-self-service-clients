@@ -8,7 +8,7 @@
 group = "de.mixxplorer.keycloak.ssc"
 version = "0.3.7"
 
-val keycloakVersion by extra("26.1.3")
+val keycloakVersion by extra("26.1.4")
 
 plugins {
     // Apply the java-library plugin for API and implementation separation.
