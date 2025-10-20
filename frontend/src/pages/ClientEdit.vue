@@ -59,7 +59,7 @@
           <q-item-section>
             <q-item-label>Public Client</q-item-label>
             <q-item-label caption>
-              If you cannot share a secret in a secure manner (like with a Singe
+              If you cannot share a secret in a secure manner (like with a Single
               Page App) you can opt for a public client, which does not require
               a client secret. For non-public clients, you can obtain the secret
               on the setup instructions page.

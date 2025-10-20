@@ -24,7 +24,7 @@
         <h2>Setup instructions</h2>
         <p>Congratulations! You have created your client! In order to set up the client, please follow these steps:</p>
         <q-list bordered class="rounded-borders">
-          <q-expansion-item expand-separator>
+          <q-expansion-item expand-separator :default-opened="true">
             <template v-slot:header>
               <q-item-section avatar>
                 <q-icon name="settings" />
@@ -153,7 +153,7 @@
                 <q-icon name="checklist" />
               </q-item-section>
               <q-item-section>
-                <h3 class="q-mb-none">Compatibility checklist</h3>
+                <h3 class="q-mb-none">Compliance checklist</h3>
               </q-item-section>
             </template>
             <q-card>
@@ -165,7 +165,7 @@
 
                 <p>
                   Unfortunately, most of these tests cannot be done automatically.
-                  Therefore you must make sure to comply with them manually.
+                  Therefore, you must make sure to comply with them manually.
                 </p>
 
                 <q-list>
@@ -178,6 +178,7 @@
                       <p>
                         Do you have control over all URIs you set in the configuration?
                         If you allow URIs you do not control, you might allow an open redirect or even stealing of application tokens.
+                        This might harm the security of your application.
                       </p>
                     </q-item-section>
                   </q-item>
@@ -210,7 +211,7 @@
                     <q-item-section>
                       <h4 class="q-mb-none">Session handling</h4>
                       <q-item-label class="q-mb-sm" caption>
-                        You can skip this check if your application is using the refresh token properly (opens no own session).
+                        You can skip this check if your application is using the refresh token properly (does not manage an own session).
                       </q-item-label>
                       <p>
                         Is your back-channel or front-channel logout working?
@@ -236,8 +237,8 @@
                         <li>The user might wrongly believe that this ended all sessions, but this would not be the case.</li>
                       </ol>
                       <p>
-                        You should test a working front- or back-channel logout by logging in to your application,
-                        then logout from another app (e.g. <a @click="userStore.logoutUser('/')">log out here</a>).
+                        You should <b>test a working front- or back-channel logout</b> by logging in to your application,
+                        then logout from another app (e.g. <a @click="userStore.logoutUser('/')">log out from this self service portal</a>).
                         Now, the session within your app should be ended or should end very soon (in about 2 minutes).
                       </p>
                     </q-item-section>
@@ -249,7 +250,7 @@
         </q-list>
 
         <h2 class="q-mt-lg">Client properties</h2>
-        <p>Some settings of the client can only changed by admins of this Keycloak instance. Some of them are shown here:</p>
+        <p>Some settings of the client can only changed by admins of this Keycloak instance. A subset is shown here:</p>
 
         <q-list bordered class="rounded-borders">
           <q-item v-if="!client?.publicClient">
