@@ -1,15 +1,29 @@
-version: "3.2"
-
 services:
+  # Fixing ownership of Docker volume
+  keycloak-change-db-vol-ownership:
+    image: debian:trixie
+    user: root
+    volumes:
+      - keycloak-db:/tmp/change-ownership
+    command: chown -R 1000:1000 /tmp/change-ownership
+
   keycloak:
     image: quay.io/keycloak/keycloak:24.0.5
     container_name: self-service-clients-kc-test
     environment:
       DB_VENDOR: h2
-      KC_LOG_LEVEL: "DEBUG"
+      KC_LOG_LEVEL: "WARN"
+      KEYCLOAK_ADMIN: "admin"
+      KEYCLOAK_ADMIN_PASSWORD: "notSecure"
     volumes:
-      - ./h2:/opt/keycloak/data/h2
-      - $PWD/../keycloak/build/libs:/opt/keycloak/providers:ro
+      - keycloak-db:/opt/keycloak/data/h2
+      - ../keycloak/build/libs:/opt/keycloak/providers:ro
     ports:
       - "127.0.0.1:8080:8080"
     command: ["start-dev"]
+    depends_on:
+      keycloak-change-db-vol-ownership:
+        condition: service_completed_successfully
+
+volumes:
+  keycloak-db:

@@ -34,10 +34,11 @@ build-keycloak-api:
 
 build-frontend:
   stage: build
-  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/library/node:18
+  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/library/node:20
   needs: []
   script:
     - cd frontend
+    - corepack enable
     - yarn install
     - yarn lint
     - yarn build
