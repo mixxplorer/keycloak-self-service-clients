@@ -133,7 +133,7 @@
                         </q-card-section>
 
                         <q-card-section>
-                          The new client secret will the only valid secret immediately.
+                          The new client secret will be the only valid secret immediately.
                         </q-card-section>
 
                         <q-card-actions align="right">

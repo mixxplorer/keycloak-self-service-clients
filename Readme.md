@@ -32,9 +32,11 @@ Whether users are allowed to modify clients is specified via a client attribute 
 
 ## Development setup
 
-Build the single components (see [their](frontend/Readme.md) [Readmes](keycloak/Readmme.md)) and then run `docker compose up` within the [testing](/testing) directory.
+The project ships with a `devcontainer` configuration. It is recommended to use it as it includes all development dependencies. The git repo must be cloned with [git-lfs](https://git-lfs.com/) support.
 
-Create a realm `test` within Keycloak and the client `self-service-clients` with the client role `manage-self-service-clients`. Add a user with this client role.
+After the `devcontainer` finished setting up the container, run `docker compose up` within the [testing](/testing) directory. If you are not using the `devcontainer`, you must first build the Keycloak plugin according to its [Readme](keycloak/Readme.md).
+
+Now, create a realm `test` within Keycloak and the client `self-service-clients` with the client role `manage-self-service-clients`. Add a user with this client role. This user is now able to manage their own self service clients.
 
 ## Production setup
 

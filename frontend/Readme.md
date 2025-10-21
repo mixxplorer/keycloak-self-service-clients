@@ -5,6 +5,8 @@ Manage personal Keycloak clients to integrate organization authentication into y
 ## Install the dependencies
 
 ```bash
+corepack up
+# or
 yarn
 # or
 npm install
@@ -13,7 +15,8 @@ npm install
 ### Start the app in development mode (hot-code reloading, error reporting, etc.)
 
 ```bash
-quasar dev
+# Replace the Keycloak URL with the Keycloak you want to use
+KEYCLOAK_URL=http://localhost:8080 yarn dev
 ```
 
 ### Lint the files

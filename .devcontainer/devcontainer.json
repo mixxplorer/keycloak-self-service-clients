@@ -1,0 +1,28 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/java
+{
+    "name": "Keycloak Self Service Clients",
+    "build": {
+        // Path is relative to the devcontainer.json file.
+        "dockerfile": "Dockerfile"
+    },
+    "remoteUser": "root",
+
+    "features": {
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {
+            "moby": false
+        }
+    },
+
+    "customizations": {
+        // Configure properties specific to VS Code, add VS Code extensions
+        "vscode": {
+            "extensions": [
+                "vue.volar",
+                "vscjava.vscode-java-pack"
+            ]
+        }
+    },
+
+    "postStartCommand": "(cd frontend && corepack up) && (cd keycloak && ./gradlew build)"
+}
