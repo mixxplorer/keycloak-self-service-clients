@@ -1,7 +1,21 @@
 <template>
   <q-page>
     <div class="page-content">
-      <h1 v-if="isEditForm">Edit Client</h1>
+      <h1 v-if="isEditForm">
+        Edit Client
+        <q-btn
+          color="primary"
+          class="q-ma-md"
+          flat
+          type="a"
+          :to="{
+            name: 'ClientOverview',
+            params: { clientUuid: clientUuid },
+          }"
+        >
+          View
+        </q-btn>
+      </h1>
       <h1 v-else>Add New Client</h1>
 
       <div v-if="loading" class="row justify-center q-my-md">
@@ -22,13 +36,7 @@
           :readonly="isEditForm"
         >
           <template v-slot:append>
-            <a title="Copy client ID to clipboard">
-              <q-icon
-                name="file_copy"
-                class="cursor-pointer"
-                @click="copyToClipboard(client.clientId)"
-              />
-            </a>
+            <ClipboardCopy :value="client?.clientId as string" />
           </template>
         </q-input>
 
@@ -51,7 +59,7 @@
           <q-item-section>
             <q-item-label>Public Client</q-item-label>
             <q-item-label caption>
-              If you cannot share a secret in a secure manner (like with a Singe
+              If you cannot share a secret in a secure manner (like with a Single
               Page App) you can opt for a public client, which does not require
               a client secret. For non-public clients, you can obtain the secret
               on the setup instructions page.
@@ -350,14 +358,14 @@
 </template>
 
 <script setup lang="ts">
-import { copyToClipboard } from 'quasar'
 import { Ref, computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
+import ClipboardCopy from 'src/components/ClipboardCopy.vue'
 import FormListInput from 'src/components/FormListInput.vue'
-import { Notifier } from 'src/components/notifier/Notifier'
 import { IWritableClient } from 'src/definitions/Client'
 import { KeycloakRequestAPI } from 'src/requestAPI/KeycloakRequestAPI'
+import { Notifier } from 'src/utils/notifier'
 
 defineOptions({
   name: 'ClientsEdit',
@@ -430,7 +438,7 @@ async function saveClient() {
 
       client.value = saveResult.data
       clientUuid.value = saveResult.data.id
-      router.push({ name: 'ClientEdit', params: { clientUuid: clientUuid.value } })
+      router.push({ name: 'ClientOverview', params: { clientUuid: clientUuid.value } })
     } else {
       await KeycloakRequestAPI.clientUpdate(
         clientUuid.value,

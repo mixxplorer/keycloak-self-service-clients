@@ -2,8 +2,8 @@ import { OidcClient, StringMap } from '@axa-fr/oidc-client'
 import { defineStore } from 'pinia'
 
 import { IDP_CALLBACK_URI } from 'src/app-constants'
-import { Notifier } from 'src/components/notifier/Notifier'
 import { IUserInfo } from 'src/definitions/UserInfo'
+import { Notifier } from 'src/utils/notifier'
 import { OidcUtils } from 'src/utils/oidc'
 
 export enum UserLoadingState {
