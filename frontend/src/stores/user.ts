@@ -45,7 +45,7 @@ export const useUserStore = defineStore('user', {
   actions: {
     async loadUser(): Promise<void> {
       this.idpOidcClient.subscribeEvents((name, data) => {
-        if (['token_aquired', 'token_renewed'].includes(name)) {
+        if ([OidcClient.eventNames.token_acquired, OidcClient.eventNames.token_renewed].includes(name)) {
           if (this.idpErrorNotificationClose !== null) {
             this.idpErrorNotificationClose()
             this.idpErrorNotificationClose = null
@@ -54,15 +54,15 @@ export const useUserStore = defineStore('user', {
           this.userInfo = this.idpOidcClient.tokens.idTokenPayload as IUserInfo
           this.loadingState = UserLoadingState.AUTHENTICATED
         } else if ([
-          'token_timer',
-          'loginAsync_begin',
-          'loginCallbackAsync_begin',
-          'loginCallbackAsync_end',
-          'refreshTokensAsync_begin',
-          'refreshTokensAsync_end',
+          OidcClient.eventNames.token_timer,
+          OidcClient.eventNames.loginAsync_begin,
+          OidcClient.eventNames.loginCallbackAsync_begin,
+          OidcClient.eventNames.loginCallbackAsync_end,
+          OidcClient.eventNames.refreshTokensAsync_begin,
+          OidcClient.eventNames.refreshTokensAsync_end,
         ].includes(name)) {
           // ignore these events, they are not useful for us
-        } else if (name === 'loginCallbackAsync_error') {
+        } else if (name === OidcClient.eventNames.loginCallbackAsync_error) {
           if (this.idpErrorNotificationClose !== null) {
             this.idpErrorNotificationClose()
             this.idpErrorNotificationClose = null
@@ -73,8 +73,8 @@ export const useUserStore = defineStore('user', {
           } else {
             this.idpErrorNotificationClose = Notifier.showErrorMessage('Login failed, please try again.', false)
           }
-        } else if (name === 'logout_from_another_tab' || (
-          name === 'refreshTokensAsync_error' && (data as Error).message.includes('session lost'))
+        } else if (name === OidcClient.eventNames.logout_from_another_tab || (
+          name === OidcClient.eventNames.refreshTokensAsync_error && (data as Error).message.includes('session lost'))
         ) {
           this.loadingState = UserLoadingState.UNAUTHENTICATED
           window.location.reload()

@@ -12,7 +12,7 @@
     "postinstall": "quasar prepare"
   },
   "dependencies": {
-    "@axa-fr/oidc-client": "^7.22.7",
+    "@axa-fr/oidc-client": "^7.26.0",
     "@quasar/extras": "^1.17.0",
     "axios": "^1.12.2",
     "pinia": "^3.0.3",

@@ -12,19 +12,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@axa-fr/oidc-client-service-worker@npm:7.22.7":
-  version: 7.22.7
-  resolution: "@axa-fr/oidc-client-service-worker@npm:7.22.7"
-  checksum: 10c0/3451bd9983c5b1a4507594626d6e5c7b7160080dac15ab3b4f2835d00bf6be77ea8b0466bab4aafa3997da909c8bc13a7b3705f28b6c28aee2f7a80bcb2838c7
+"@axa-fr/oidc-client-service-worker@npm:7.26.0":
+  version: 7.26.0
+  resolution: "@axa-fr/oidc-client-service-worker@npm:7.26.0"
+  checksum: 10c0/f2011842db1a2bdc14b9be82586cbe1b88237df9c6a8be48e714822e1a7a51c4f619d555912dc2c8a903e7a985316f2f8e274a59f7303fbc42c067f597c3e54d
   languageName: node
   linkType: hard
 
-"@axa-fr/oidc-client@npm:^7.22.7":
-  version: 7.22.7
-  resolution: "@axa-fr/oidc-client@npm:7.22.7"
+"@axa-fr/oidc-client@npm:^7.26.0":
+  version: 7.26.0
+  resolution: "@axa-fr/oidc-client@npm:7.26.0"
   dependencies:
-    "@axa-fr/oidc-client-service-worker": "npm:7.22.7"
-  checksum: 10c0/cff8dcc1657863189e32f53ae6a057572575ed43557ded8d0a62cf1487f889586a14ad1c1a41543f96e9a5c0a6a41f7b42c2cb8a1930577711eec7330b1c1ff3
+    "@axa-fr/oidc-client-service-worker": "npm:7.26.0"
+  checksum: 10c0/f1eb2c25a428863916f0029afe43209417c16cce02bd49bf832bd7de77a8225a26e5cfbf8ffa12778509782d6d8e0885ec3a0c5e7526c6299bc46cd9a065c382
   languageName: node
   linkType: hard
 
@@ -6802,7 +6802,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "self-service-clients@workspace:."
   dependencies:
-    "@axa-fr/oidc-client": "npm:^7.22.7"
+    "@axa-fr/oidc-client": "npm:^7.26.0"
     "@quasar/app-vite": "npm:^2.4.0"
     "@quasar/extras": "npm:^1.17.0"
     "@stylistic/eslint-plugin": "npm:^5.5.0"

@@ -8,7 +8,7 @@ import {
 } from 'src/app-constants'
 
 class ReplaceOidcLocation extends OidcLocation implements ILOidcLocation {
-  open(url: string): void {
+  override open(url: string): void {
     window.location.replace(url)
   }
 }
