@@ -1,4 +1,4 @@
-FROM dr.rechenknecht.net/bauhelfer/container/main/ubuntu-yarn-lighttp:node-18
+FROM dr.rechenknecht.net/bauhelfer/container/main/ubuntu-yarn-lighttp:node-22
 
 LABEL org.opencontainers.image.authors="leo@mixxplorer.de"
 

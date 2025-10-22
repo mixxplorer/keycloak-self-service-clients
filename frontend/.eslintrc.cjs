@@ -26,9 +26,10 @@ module.exports = {
     // Uncomment any of the lines below to choose desired strictness,
     // but leave only one uncommented!
     // See https://eslint.vuejs.org/rules/#available-rules
-    'plugin:vue/vue3-essential', // Priority A: Essential (Error Prevention)
-    'plugin:vue/vue3-strongly-recommended', // Priority B: Strongly Recommended (Improving Readability)
-    'plugin:vue/vue3-recommended', // Priority C: Recommended (Minimizing Arbitrary Choices and Cognitive Overhead)
+    'plugin:vue/essential', // Priority A: Essential (Error Prevention)
+    'plugin:vue/strongly-recommended', // Priority B: Strongly Recommended (Improving Readability)
+    'plugin:vue/recommended', // Priority C: Recommended (Minimizing Arbitrary Choices and Cognitive Overhead)
+    'plugin:import/recommended',
     'plugin:import/typescript',
   ],
 
@@ -39,13 +40,13 @@ module.exports = {
     // https://github.com/typescript-eslint/typescript-eslint/tree/master/packages/parser#configuration
     // https://github.com/TypeStrong/fork-ts-checker-webpack-plugin#eslint
     // Needed to make the parser take into account 'vue' files
-    extraFileExtensions: ['.vue', '.ts'],
+    extraFileExtensions: ['.vue'],
     parser: '@typescript-eslint/parser',
     project: './tsconfig.json',
     tsconfigRootDir: __dirname,
-    ecmaVersion: 2022, // Allows for the parsing of modern ECMAScript features
+    ecmaVersion: 2024, // Allows for the parsing of modern ECMAScript features
     sourceType: 'module', // Allows for the use of imports
-    include: ['**/*.js', '**/*.ts', '**/*.vue', '*.js'],
+    include: ['**/*.js', '**/*.ts', '**/*.vue', '*.js', '*.cjs'],
   },
 
   plugins: [
@@ -59,6 +60,9 @@ module.exports = {
     // All the stylistic rules are now in this plugin:
     // https://github.com/eslint/eslint/issues/17522 (see also https://eslint.style)
     '@stylistic',
+
+    // Unify the sort order of imports
+    'import',
   ],
 
   globals: {
@@ -135,8 +139,6 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': 'error',
     '@typescript-eslint/explicit-module-boundary-types': 'error',
     '@typescript-eslint/unbound-method': 'off',
-    '@typescript-eslint/no-unused-vars': 'error',
-    '@typescript-eslint/explicit-module-boundary-types': 'error',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/no-explicit-any': 'error',
@@ -203,8 +205,6 @@ module.exports = {
         },
       },
     ],
-    'no-console': 'error',
-    'no-warning-comments': 'warn',
 
     'comma-dangle': ['error', 'always-multiline'],
 
@@ -233,17 +233,6 @@ module.exports = {
     '@stylistic/function-paren-newline': ['error', 'multiline-arguments'],
     '@stylistic/newline-per-chained-call': ['error'],
     '@stylistic/function-call-spacing': ['error', 'never'],
-    'space-before-function-paren': [
-      'error',
-      {
-        anonymous: 'always',
-        named: 'never', // Only remove spaces for something like function abc() {}
-        asyncArrow: 'always',
-      },
-    ],
-
-    '@typescript-eslint/no-unused-vars': 'error',
-    '@typescript-eslint/explicit-module-boundary-types': 'error',
 
     // we need this due to our injections in services and controllers
     'no-useless-constructor': 'off',
@@ -252,7 +241,12 @@ module.exports = {
     // This uses the eslint-import-resolver-typescript npm module to properly
     // resolve the imports. Without it, the linter thinks 'utils/error' is an
     // external package, whereas it is just an absolute import.
-    'import/resolver': 'typescript',
+    'import/resolver': {
+      typescript: {
+        project: __dirname,
+      },
+      node: true,
+    },
   },
   overrides: [
     {
@@ -262,4 +256,4 @@ module.exports = {
       },
     },
   ],
-};
+}
