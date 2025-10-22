@@ -8,13 +8,13 @@ services:
     command: chown -R 1000:1000 /tmp/change-ownership
 
   keycloak:
-    image: quay.io/keycloak/keycloak:24.0.5
+    image: quay.io/keycloak/keycloak:26.4.1
     container_name: self-service-clients-kc-test
     environment:
       DB_VENDOR: h2
       KC_LOG_LEVEL: "WARN"
-      KEYCLOAK_ADMIN: "admin"
-      KEYCLOAK_ADMIN_PASSWORD: "notSecure"
+      KC_BOOTSTRAP_ADMIN_USERNAME: "admin"
+      KC_BOOTSTRAP_ADMIN_PASSWORD: "notSecure"
     volumes:
       - keycloak-db:/opt/keycloak/data/h2
       - ../keycloak/build/libs:/opt/keycloak/providers:ro
