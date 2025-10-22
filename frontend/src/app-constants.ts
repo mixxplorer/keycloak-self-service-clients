@@ -40,9 +40,9 @@ export const KEYCLOAK_REALM = getEnvironmentValue(
   process.env.KEYCLOAK_REALM,
 )
 export const KEYCLOAK_CLIENT_ID = getEnvironmentValue(
-  'IDP_CLIENT_ID',
+  'KEYCLOAK_CLIENT_ID',
   'self-service-clients',
-  process.env.IDP_CLIENT_ID,
+  process.env.KEYCLOAK_CLIENT_ID,
 )
 export const IDP_CALLBACK_URI = '/oidc/callback'
 
