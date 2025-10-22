@@ -55,6 +55,16 @@ This section describes how to set up both components for a production setup.
 
 Then, the API is ready to use.
 
+#### Compatiblity
+
+The plugin versions are compatible with these keycloak versions:
+
+
+|SSC Plugin Version| Keycloak Min. Version | Keycloak Max Version |
+|-|-|-|
+|0.1.0|24.0.0|24.0.5|
+|0.2.0|26.3.0|26.4.1|
+
 ### Web frontend
 
 * Get the latest Docker container (`dr.rechenknecht.net/mixxplorer/keycloak/self-service-clients/main/frontend:latest` or take a look at [GitLab registry](https://rechenknecht.net/mixxplorer/keycloak/self-service-clients/container_registry)). Versioned container are available as well, please check [the registry](https://rechenknecht.net/mixxplorer/keycloak/self-service-clients/container_registry).
