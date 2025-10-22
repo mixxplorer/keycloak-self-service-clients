@@ -6,7 +6,7 @@
  */
 
 group = "de.mixxplorer.keycloak.ssc"
-version = "0.1.0"
+version = "0.2.0"
 
 val keycloakVersion by extra("26.4.1")
 
