@@ -49,22 +49,29 @@ build-frontend:
 
 docker-frontend:
   stage: pack
-  image:
-    name: gcr.io/kaniko-project/executor:v1.14.0-debug
-    entrypoint: [""]
+  image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/docker:latest
+  tags:
+    # Use a privileged runner for building container images
+    - privileged
+  services:
+    - name: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/docker:dind
+      alias: docker
   variables:
+    # This will instruct Docker not to start over TLS.
+    DOCKER_TLS_CERTDIR: ""
+
     IMAGE_TAG_ENV: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG/frontend:$CI_PIPELINE_IID
     IMAGE_TAG_GENERAL: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG/frontend:latest
   needs:
     - job: build-frontend
       artifacts: true
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
     - cd frontend
-    - /kaniko/executor
-      -v warn
-      --context "${CI_PROJECT_DIR}/frontend"
-      --dockerfile "${CI_PROJECT_DIR}/frontend/Dockerfile"
-      --destination "${IMAGE_TAG_ENV}"
-      --destination "${IMAGE_TAG_GENERAL}"
+    - docker build --build-arg RELEASE_NAME -t "${IMAGE_TAG_GENERAL}" .
+    - docker push "${IMAGE_TAG_GENERAL}"
+    - docker build --build-arg RELEASE_NAME -t "${IMAGE_TAG_ENV}" .
+    - docker push "${IMAGE_TAG_ENV}"
     - echo "Pushed to ${IMAGE_TAG_ENV}"
     - echo "Pushed to ${IMAGE_TAG_GENERAL}"
