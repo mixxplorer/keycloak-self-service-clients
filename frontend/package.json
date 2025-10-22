@@ -13,10 +13,10 @@
   },
   "dependencies": {
     "@axa-fr/oidc-client": "^7.22.7",
-    "@quasar/extras": "^1.16.11",
+    "@quasar/extras": "^1.17.0",
     "axios": "^1.7.2",
     "pinia": "^2.1.7",
-    "quasar": "^2.16.4",
+    "quasar": "^2.18.5",
     "vue": "^3.4.27",
     "vue-router": "^4.3.3"
   },
