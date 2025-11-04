@@ -37,8 +37,8 @@ export class KeycloakRequestAPI extends BaseAPI {
       return axios.get(requestURL, {
         headers: header,
         params,
-        cancelToken,
         timeout: DEFAULT_REQUEST_TIMEOUT,
+        ...(cancelToken ? { cancelToken } : {}),
       })
     })
   }
@@ -57,8 +57,8 @@ export class KeycloakRequestAPI extends BaseAPI {
       return axios.get(requestURL, {
         headers: header,
         params,
-        cancelToken,
         timeout: DEFAULT_REQUEST_TIMEOUT,
+        ...(cancelToken ? { cancelToken } : {}),
       })
     })
   }
@@ -101,8 +101,8 @@ export class KeycloakRequestAPI extends BaseAPI {
         {
           headers: header,
           params,
-          cancelToken,
           timeout: DEFAULT_REQUEST_TIMEOUT,
+          ...(cancelToken ? { cancelToken } : {}),
         },
       )
     })
@@ -126,8 +126,8 @@ export class KeycloakRequestAPI extends BaseAPI {
         {
           headers: header,
           params,
-          cancelToken,
           timeout: DEFAULT_REQUEST_TIMEOUT,
+          ...(cancelToken ? { cancelToken } : {}),
         },
       )
     })
@@ -150,8 +150,8 @@ export class KeycloakRequestAPI extends BaseAPI {
         {
           headers: header,
           params,
-          cancelToken,
           timeout: DEFAULT_REQUEST_TIMEOUT,
+          ...(cancelToken ? { cancelToken } : {}),
         },
       )
     })
@@ -173,8 +173,8 @@ export class KeycloakRequestAPI extends BaseAPI {
         {
           headers: header,
           params,
-          cancelToken,
           timeout: DEFAULT_REQUEST_TIMEOUT,
+          ...(cancelToken ? { cancelToken } : {}),
         },
       )
     })

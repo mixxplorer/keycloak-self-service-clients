@@ -1,8 +1,8 @@
-import { boot } from 'quasar/wrappers'
+import { defineBoot } from '#q-app/wrappers'
 
 import { useUserStore } from 'src/stores/user'
 
-export default boot(async (): Promise<void> => {
+export default defineBoot(async (): Promise<void> => {
   const userStore = useUserStore()
 
   await userStore.loadUser()

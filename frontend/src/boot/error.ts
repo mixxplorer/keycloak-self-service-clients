@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
+import { defineBoot } from '#q-app/wrappers'
 import { AxiosError } from 'axios'
-import { boot } from 'quasar/wrappers'
 
 import { Notifier } from 'src/utils/notifier'
 
@@ -10,7 +9,7 @@ interface ErrorPayload {
   errorMessage?: string;
 }
 
-export default boot(({ app }): void => {
+export default defineBoot(({ app }): void => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   window.onerror = function (msg, url, line, col, error) {
     // eslint-disable-next-line no-console
