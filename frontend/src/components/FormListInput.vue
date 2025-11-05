@@ -12,6 +12,7 @@
         filled
         :modelValue="item.value"
         :label="props.inputLabel + ' #' + (item.idx + 1)"
+        :square="item.idx !== 0"
         @update:model-value="updateInput(item.idx, $event as string)"
       />
     </q-expansion-item>
