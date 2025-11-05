@@ -2,7 +2,7 @@
 import axios, { AxiosResponse, CancelToken } from 'axios'
 
 import { DEFAULT_REQUEST_TIMEOUT, IDP_URL } from 'src/app-constants'
-import { IClient, IWritableClient } from 'src/definitions/Client'
+import type { IClient, IWritableClient } from 'src/definitions/Client'
 import { BaseAPI } from 'src/requestAPI/BaseAPI'
 
 export class KeycloakRequestAPI extends BaseAPI {
@@ -81,6 +81,7 @@ export class KeycloakRequestAPI extends BaseAPI {
       backchannelLogoutUrl: data.backchannelLogoutUrl,
       frontchannelLogoutUrl: data.frontchannelLogoutUrl,
       postLogoutRedirectUris: data.postLogoutRedirectUris,
+      managers: data.managers,
     }
   }
 

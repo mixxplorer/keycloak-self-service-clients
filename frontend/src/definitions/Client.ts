@@ -14,6 +14,9 @@ export interface IWritableClient {
   backchannelLogoutUrl: string;
   frontchannelLogoutUrl: string;
   postLogoutRedirectUris: string[];
+
+  // The usernames of the managers.
+  managers: string[];
 }
 
 export interface IClient extends IWritableClient {
@@ -26,4 +29,9 @@ export interface IClient extends IWritableClient {
   directAccessGrantsEnabled: boolean;
   serviceAccountsEnabled: boolean;
   authorizationServicesEnabled: boolean;
+}
+
+export interface IClientManagers {
+  /// The usernames of the users that are allowed to manage the client.
+  managers: string[],
 }

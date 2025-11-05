@@ -303,6 +303,19 @@
             Relative paths are supported in combination with Root URL."
         />
 
+        <h2 class="q-mt-xl">Sharing</h2>
+
+        <FormListInput
+          v-model="client.managers"
+          name="managers"
+          filled
+          :defaultOpened="true"
+          inputLabel="Manager"
+          headerLabel="Client Managers"
+          hint="You can share editing permissions with other users. Enter the user names of all users that shall be able to edit this client.
+            Be careful: removing yourself from this list makes you lose access to the client."
+        />
+
         <div class="row justify-end q-mt-md">
           <q-btn
             v-if="isEditForm"
@@ -365,6 +378,7 @@ import ClipboardCopy from 'src/components/ClipboardCopy.vue'
 import FormListInput from 'src/components/FormListInput.vue'
 import { IWritableClient } from 'src/definitions/Client'
 import { KeycloakRequestAPI } from 'src/requestAPI/KeycloakRequestAPI'
+import { useUserStore } from 'src/stores/user'
 import { Notifier } from 'src/utils/notifier'
 
 defineOptions({
@@ -375,6 +389,7 @@ const loading = ref(true)
 
 const route = useRoute()
 const router = useRouter()
+const userStore = useUserStore()
 
 const clientUuid: Ref<string | null> = ref(
   typeof route.params.clientUuid === 'string'
@@ -396,7 +411,7 @@ watch(
 
 const isEditForm = computed(() => clientUuid.value !== null)
 
-const defaultClient: IWritableClient = {
+const getDefaultClient = (): IWritableClient => ({
   clientId: 'ssc-',
   name: '',
   description: '',
@@ -412,9 +427,10 @@ const defaultClient: IWritableClient = {
   backchannelLogoutUrl: '',
   frontchannelLogoutUrl: '',
   postLogoutRedirectUris: ['+'],
-}
+  managers: userStore.userInfo?.preferred_username ? [userStore.userInfo.preferred_username] : [],
+})
 
-const client: Ref<IWritableClient> = ref(structuredClone(defaultClient))
+const client: Ref<IWritableClient> = ref(getDefaultClient())
 
 async function loadClient() {
   if (clientUuid.value === null) {
@@ -464,7 +480,7 @@ async function deleteClient() {
 
 const confirmResetDialog = ref(false)
 function resetForm() {
-  client.value = structuredClone(defaultClient)
+  client.value = getDefaultClient()
 }
 </script>
 
