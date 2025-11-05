@@ -39,8 +39,10 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static de.mixxplorer.keycloak.ssc.Constants.MAX_CLIENTS_PER_USER;
+import static de.mixxplorer.keycloak.ssc.Util.getManagerNames;
 import static de.mixxplorer.keycloak.ssc.Util.getUserManageClientAttributeMap;
 import static de.mixxplorer.keycloak.ssc.Util.hasUserAccessToClient;
+import static de.mixxplorer.keycloak.ssc.Util.setManagersByUsername;
 
 public class SelfServiceResources {
     private final KeycloakSession session;
@@ -71,11 +73,14 @@ public class SelfServiceResources {
         // also even when using the internal SPI, it is not possible to overcome the global attribute filter
         clientModels = clientModels.filter(model -> hasUserAccessToClient(model, auth.getUser()));
 
-        Stream<ClientRepresentation> intermediateOutput = ModelToRepresentation.filterValidRepresentations(clientModels,
-                c -> ModelToRepresentation.toRepresentation(c, session)
+        Stream<SelfServiceClientRepresentation> intermediateOutput = ModelToRepresentation.filterValidRepresentations(
+            clientModels,
+            client -> new SelfServiceClientRepresentation(
+                ModelToRepresentation.toRepresentation(client, session),
+                getManagerNames(client, this.session).toList()
+            )
         );
-
-        return intermediateOutput.map(SelfServiceClientRepresentation::new);
+        return intermediateOutput;
     }
 
     // based on org.keycloak.services.resources.admin (org/keycloak/services/resources/admin/ClientsResource.java)
@@ -92,17 +97,13 @@ public class SelfServiceResources {
 
         ClientRepresentation rep = clientWritableRep.toClientRepresentation();
 
-        // add permission flag for creating user
-        final Map<String, String> authClientAttributes = getUserManageClientAttributeMap(auth.getUser());
-        final var currentAttributes = rep.getAttributes();
-        currentAttributes.putAll(authClientAttributes);
-        rep.setAttributes(currentAttributes);
-
         try {
             session.clientPolicy().triggerOnEvent(new AdminClientRegisterContext(rep, adminAuth.adminAuth()));
 
             // persist new client
             ClientModel clientModel = ClientManager.createClient(session, realm, rep);
+
+            setManagersByUsername(clientModel, clientWritableRep.managers, auth.getUser(), session);
 
             // we do not allow enabling service accounts
 
@@ -124,7 +125,11 @@ public class SelfServiceResources {
             session.getContext().setClient(clientModel);
             session.clientPolicy().triggerOnEvent(new AdminClientRegisteredContext(clientModel, adminAuth.adminAuth()));
 
-            return new SelfServiceClientRepresentation(ModelToRepresentation.toRepresentation(clientModel, session));
+
+            return new SelfServiceClientRepresentation(
+                ModelToRepresentation.toRepresentation(clientModel, session),
+                getManagerNames(clientModel, session).toList()
+            );
         } catch (ModelDuplicateException e) {
             throw ErrorResponse.exists("Client " + rep.getClientId() + " already exists");
         } catch (ClientPolicyException cpe) {

@@ -1,17 +1,7 @@
 package de.mixxplorer.keycloak.ssc.rest;
 
-import de.mixxplorer.keycloak.ssc.rest.dto.SelfServiceClientRepresentation;
-import de.mixxplorer.keycloak.ssc.rest.dto.SelfServiceClientWritableRepresentation;
-import jakarta.ws.rs.BadRequestException;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
+import java.util.List;
+
 import org.keycloak.OAuthErrorException;
 import org.keycloak.events.Errors;
 import org.keycloak.events.admin.OperationType;
@@ -41,6 +31,23 @@ import org.keycloak.services.resources.admin.AdminRoot;
 import org.keycloak.services.resources.admin.fgap.AdminPermissionEvaluator;
 import org.keycloak.validation.ValidationUtil;
 
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+
+import de.mixxplorer.keycloak.ssc.rest.dto.SelfServiceClientRepresentation;
+import de.mixxplorer.keycloak.ssc.rest.dto.SelfServiceClientWritableRepresentation;
+
+import static de.mixxplorer.keycloak.ssc.Util.setManagersByUsername;
+import static de.mixxplorer.keycloak.ssc.Util.getManagerNames;
+
 public class SelfServiceClientResources {
     private final KeycloakSession session;
     private final RealmModel realm;
@@ -64,8 +71,9 @@ public class SelfServiceClientResources {
     @Produces(MediaType.APPLICATION_JSON)
     public SelfServiceClientRepresentation get() {
         ClientRepresentation representation = ModelToRepresentation.toRepresentation(clientModel, session);
+        List<String> managers = getManagerNames(clientModel, this.session).toList();
 
-        return new SelfServiceClientRepresentation(representation);
+        return new SelfServiceClientRepresentation(representation, managers);
     }
 
     // based on org.keycloak.services.resources.admin (org/keycloak/services/resources/admin/ClientsResource.java)
@@ -116,6 +124,8 @@ public class SelfServiceClientResources {
             }
 
             RepresentationToModel.updateClient(rep, clientModel, session);
+
+            setManagersByUsername(clientModel, clientWritableRep.managers, auth.getUser(), session);
 
             ValidationUtil.validateClient(session, clientModel, false, r -> {
                 session.getTransactionManager().setRollbackOnly();

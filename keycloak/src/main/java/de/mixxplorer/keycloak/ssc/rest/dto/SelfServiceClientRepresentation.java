@@ -4,6 +4,7 @@ import org.keycloak.representations.idm.ClientRepresentation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class SelfServiceClientRepresentation extends SelfServiceClientWritableRepresentation {
@@ -17,7 +18,7 @@ public class SelfServiceClientRepresentation extends SelfServiceClientWritableRe
     public Boolean serviceAccountsEnabled;
     public Boolean authorizationServicesEnabled;
 
-    public SelfServiceClientRepresentation(ClientRepresentation clientRepresentation) {
+    public SelfServiceClientRepresentation(ClientRepresentation clientRepresentation, List<String> managers) {
         this.id = clientRepresentation.getId();
 
         this.clientId = clientRepresentation.getClientId();
@@ -27,7 +28,7 @@ public class SelfServiceClientRepresentation extends SelfServiceClientWritableRe
         this.baseUrl = clientRepresentation.getBaseUrl();
         this.enabled = clientRepresentation.isEnabled();
         this.redirectUris = clientRepresentation.getRedirectUris();
-        ;
+
         this.webOrigins = clientRepresentation.getWebOrigins();
 
         this.publicClient = clientRepresentation.isPublicClient();
@@ -61,5 +62,7 @@ public class SelfServiceClientRepresentation extends SelfServiceClientWritableRe
         this.directAccessGrantsEnabled = clientRepresentation.isDirectAccessGrantsEnabled();
         this.serviceAccountsEnabled = clientRepresentation.isServiceAccountsEnabled();
         this.authorizationServicesEnabled = clientRepresentation.getAuthorizationServicesEnabled();
+
+        this.managers = managers;
     }
 }

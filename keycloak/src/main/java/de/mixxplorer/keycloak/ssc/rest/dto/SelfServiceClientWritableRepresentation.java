@@ -28,6 +28,8 @@ public class SelfServiceClientWritableRepresentation {
     public String backchannelLogoutUrl;
     public String frontchannelLogoutUrl;
     public List<String> postLogoutRedirectUris;
+    // The usernames of users that may edit this client.
+    public List<String> managers;
 
     // Validate passed values before creating an official ClientRepresentation
     void validatePlainValues() {
@@ -47,7 +49,7 @@ public class SelfServiceClientWritableRepresentation {
         clientRepresentation.setBaseUrl(this.baseUrl);
         clientRepresentation.setEnabled(this.enabled);
         clientRepresentation.setRedirectUris(this.redirectUris);
-        ;
+
         clientRepresentation.setWebOrigins(this.webOrigins);
 
         clientRepresentation.setPublicClient(this.publicClient);
