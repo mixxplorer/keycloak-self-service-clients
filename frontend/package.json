@@ -1,6 +1,6 @@
 {
   "name": "self-service-clients",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "description": "Manage personal Keycloak clients to integrate organization authentication into your apps!",
   "productName": "Keycloak Self Service Clients",
   "author": "Leonard Marschke <leonard@marschke.me>",

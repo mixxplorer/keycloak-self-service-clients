@@ -13,9 +13,14 @@ public class SelfServicePreflight {
         this.cors = cors;
     }
 
+    /**
+     * Answer a CORS preflight request.
+     *
+     * @return Response
+     */
     @OPTIONS
     @Path("/{any:.*}")
     public Response answerCors() {
-        return cors.builder(Response.ok()).preflight().build();
+        return cors.preflight().add(Response.ok());
     }
 }

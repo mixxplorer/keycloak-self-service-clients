@@ -4,6 +4,7 @@ import jakarta.ws.rs.ForbiddenException;
 import jakarta.ws.rs.HttpMethod;
 import jakarta.ws.rs.NotAuthorizedException;
 import jakarta.ws.rs.Path;
+import org.keycloak.http.HttpRequest;
 import org.keycloak.models.ClientModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.services.cors.Cors;
@@ -24,15 +25,14 @@ public class SelfServiceMainResource {
     @Path("")
     public Object getSelfServiceResources() {
         // Prepare CORS response
-        final var httpRequest = keycloakSession.getContext().getHttpRequest();
-        final var httpResponse = keycloakSession.getContext().getHttpResponse();
-        var cors = Cors.add(httpRequest).auth().allowedMethods(HttpMethod.GET, HttpMethod.PUT, HttpMethod.POST, HttpMethod.DELETE).auth();
+        final HttpRequest request = keycloakSession.getContext().getHttpRequest();
+        Cors cors = Cors.builder().allowedMethods(HttpMethod.GET, HttpMethod.PUT, HttpMethod.POST, HttpMethod.DELETE).auth();
 
         // Do not continue, if the SSC_CLIENT_ID client is not available as this is an invalid configuration
         final var sscClient = this.keycloakSession.clients().getClientByClientId(
                 this.keycloakSession.getContext().getRealm(), SSC_CLIENT_ID);
         if (sscClient == null) {
-            cors.allowAllOrigins().build(httpResponse);
+            cors.allowAllOrigins().add();
             throw new ForbiddenException(String.format("Self Service Clients not activated on this realm. "
                     + "Please ask your admin to create the %s client.", SSC_CLIENT_ID));
         }
@@ -41,8 +41,8 @@ public class SelfServiceMainResource {
         // a valid CORS response, even if the route does not exist. This might be a bit misleading, but keeps
         // the code tidy. Furthermore, Keycloak is internally doing the same with its Admin API.
         // see also org.keycloak.services.resources.admin
-        if (httpRequest.getHttpMethod().equalsIgnoreCase(HttpMethod.OPTIONS)) {
-            return new SelfServicePreflight(cors);
+        if (request.getHttpMethod().equalsIgnoreCase(HttpMethod.OPTIONS)) {
+            return new SelfServicePreflight(cors).answerCors();
         }
 
         // Check whether the user is authenticated. Doing this here ensures all requests forwarded to our real resources
@@ -51,13 +51,13 @@ public class SelfServiceMainResource {
         try {
             authResult = checkPermissionsAndGetUser(sscClient);
         } catch (Exception exc) {
-            cors.allowAllOrigins().build(httpResponse);
+            cors.allowAllOrigins().add();
             throw exc;
         }
 
         // Add cors options to prepared response, which will be used (implicitly apparently) when building responses
         // downstream.
-        cors.allowedOrigins(authResult.getToken()).build(httpResponse);
+        cors.allowedOrigins(authResult.getToken()).add();
 
         return new SelfServiceResources(this.keycloakSession, authResult);
     }
