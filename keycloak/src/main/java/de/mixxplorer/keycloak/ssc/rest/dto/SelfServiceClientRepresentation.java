@@ -43,6 +43,9 @@ public class SelfServiceClientRepresentation extends SelfServiceClientWritableRe
             this.backchannelLogoutUrl = "";
         }
         this.frontchannelLogoutUrl = attrs.get("frontchannel.logout.url");
+        if (this.frontchannelLogoutUrl == null) {
+            this.frontchannelLogoutUrl = "";
+        }
         if (attrs.get("post.logout.redirect.uris") != null) {
             this.postLogoutRedirectUris = Arrays.stream(attrs.get("post.logout.redirect.uris").split("##")).toList();
         } else {
