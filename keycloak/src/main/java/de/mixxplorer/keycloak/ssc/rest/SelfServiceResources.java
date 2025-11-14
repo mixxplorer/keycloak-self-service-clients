@@ -38,7 +38,6 @@ import org.keycloak.validation.ValidationUtil;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static de.mixxplorer.keycloak.ssc.Constants.MAX_CLIENTS_PER_USER;
 import static de.mixxplorer.keycloak.ssc.Util.getManagerNames;
 import static de.mixxplorer.keycloak.ssc.Util.getUserManageClientAttributeMap;
 import static de.mixxplorer.keycloak.ssc.Util.hasUserAccessToClient;
@@ -89,12 +88,6 @@ public class SelfServiceResources {
     @Consumes(MediaType.APPLICATION_JSON)
     @APIResponse(responseCode = "200", description = "Created")
     public SelfServiceClientRepresentation create(final SelfServiceClientWritableRepresentation clientWritableRep) {
-        // check if user has already more than allowed clients
-        if (this.getClients().count() >= MAX_CLIENTS_PER_USER) {
-            throw new ForbiddenException(String.format("You reached you maximum number of %d allowed self service clients!",
-                    MAX_CLIENTS_PER_USER));
-        }
-
         ClientRepresentation rep = clientWritableRep.toClientRepresentation();
 
         try {
