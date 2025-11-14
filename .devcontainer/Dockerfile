@@ -3,7 +3,7 @@ FROM debian:trixie
 ENV LC_ALL=C.UTF-8
 
 RUN apt-get update
-RUN apt-get install -y git curl
+RUN apt-get install -y git git-lfs curl
 
 # Install NodeJS for Quasar components
 RUN apt-get install -y nodejs npm
